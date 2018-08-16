@@ -1,0 +1,19 @@
+{
+  "name": "cdp-apert-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "leo@protofire.io",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.5.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-joi-validate": "^0.5.1",
+    "koa-router": "^7.4.0"
+  }
+}
