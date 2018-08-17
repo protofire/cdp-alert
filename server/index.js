@@ -9,7 +9,11 @@ const PORT = process.env.PORT || 3000
 const app = new Koa()
 const router = new Router()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: '*'
+  })
+)
 app.use(bodyParser())
 router.use('/alerts', alerts.routes(), alerts.allowedMethods())
 app.use(router.routes()).use(router.allowedMethods())
