@@ -223,16 +223,6 @@ export const TokenIconWrapper = styled.div`
   }
 `
 
-/*
-export const IconDAI = styled.img.attrs({
-  src: "/images/token-dai.png",
-  alt: "DAI"
-})`
-  height: 1.3rem;
-  margin: 0 0.3rem;
-`;
-*/
-
 export const IconETH = styled.img.attrs({
   src: '/images/token-eth.png',
   alt: 'ETH'
@@ -273,28 +263,6 @@ export const HelpIcon = styled.i`
   font-style: normal;
   font-weight: 600;
 `
-
-/*
-const HelpBubble = styled.div`
-  position: absolute;
-  bottom: 2rem;
-  left: 0;
-  padding: 0 1rem;
-  z-index: 100;
-
-  max-width: 10rem;
-  width: 100%;
-
-  line-height: 1.2rem;
-  color: ${({ theme }) => theme.color.sectionTag};
-
-  background-color: ${({ theme }) => theme.color.secondary};
-  border: 2px solid ${({ theme }) => theme.color.helpBorder};
-  border-radius: ${({ theme }) => theme.border.radius};
-`;
-*/
-
-// export const HelpPopup = props => <HelpBubble>{props.children}</HelpBubble>;
 
 export const WalletCdpsTable = styled.table.attrs({
   cellPadding: 0,
@@ -469,10 +437,12 @@ const Input = styled.input`
 `;
 
 export const NewAlertNumberInput = styled(Input).attrs({
-  type: "number"
+  type: "number",
+  required: true,
+  min: 150,
+  step: 1
 })`
-  min-width: 5rem;
-  max-width: 5rem;
+  max-width: 5.3rem;
   font-size: 1.5rem;
   font-weight: 500;
   padding: 0;
@@ -485,15 +455,11 @@ export const NewAlertNumberInput = styled(Input).attrs({
     outline: none;
     border: 2px solid ${({ theme }) => theme.color.gray};
   }
-
-  &:after {
-    margin-left: -1rem;
-    content: '%';
-  }  
 `;
 
 export const NewAlertEmailInput = styled(NewAlertNumberInput).attrs({
-  type: "email"
+  type: "email",
+  required: true
 })`
   min-width: 28rem;
   max-width: 28rem;
@@ -501,42 +467,11 @@ export const NewAlertEmailInput = styled(NewAlertNumberInput).attrs({
   font-weight: 400;
 `;
 
-/*
-const Input = styled.input`
-  text-align: center;
-  border: 2px solid ${({ theme }) => theme.color.softGray};
-  background-color: rgba(0, 0, 0, 0.03);
-  border-radius: ${({ theme }) => theme.border.radius};
-
-  &::placeholder {
-    color: ${({ theme }) => theme.color.softGray};
-  }
-
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-  }
+const PercentWrapper = styled.span`
+  margin: 0 0.3rem 0 -1.3rem;
 `;
-*/
 
-/*
-export const WizardNumberInput = styled(Input).attrs({
-  type: "number"
-})`
-  max-width: 24rem;
-  font-size: 2rem;
-  padding: 0;
-  margin: 0;
-  min-height: 2.8rem;
-  line-height: 2.8rem;
-  -moz-appearance: textfield;
-
-  &:focus {
-    outline: none;
-    border: 2px solid ${({ theme }) => theme.color.gray};
-  }
-`;
-*/
+export const Percent = () => <PercentWrapper>%</PercentWrapper>
 
 export const Button = styled.button.attrs({
   type: 'button'
@@ -588,9 +523,11 @@ export const Dialog = styled.div`
   background-color: ${({theme}) => theme.color.sectionBg};
   border: 4px solid ${({theme}) => theme.color.main};
   border-radius: ${({theme}) => theme.border.radius};
-
+  
   h3 {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+    font-variant: petite-caps;
+    color: ${({theme}) => theme.color.main}
   }
 
   p {

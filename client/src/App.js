@@ -14,10 +14,8 @@ import {
   Protofire,
   Section,
   Block,
-  // HelpIcon,
   Button,
   TokenIconWrapper,
-  // IconDAI,
   IconETH,
   DollarSign,
   Address,
@@ -28,10 +26,10 @@ import {
   Dialog,
   CancelDialogButton,
   AcceptDialogButton,
-  // HelpPopup,
   Web3ScreenStyled,
   WalletSelection,
-  NewAlertForm
+  NewAlertForm,
+  Percent
 } from './components/Styled'
 
 class App extends Component {
@@ -76,15 +74,14 @@ class App extends Component {
     // wallet
     walletAddress: '0x7557f009a3f16ebbedc469515d3dac5cbe9c3939',
     // wizard
-    email: 'mariano.ramonda@altoros.com',
-    minRatio: '12',
-    maxRatio: '23',
+    email: '',
+    minRatio: '175',
+    maxRatio: '300',
     // flags
-    loadingData: false,
+    creatingAlert: false,
     showForm: false,
     showNotice: false,
-    showComingSoonModal: false,
-    alertCreatedStatus: null,
+    alertCreatedSuccess: null,
     showHelp: ''
   })
 
@@ -112,11 +109,6 @@ class App extends Component {
 
   toggleNotice = () => this.setState(prevState => ({showNotice: !prevState.showNotice}))
 
-  toggleComingSoonModal = () =>
-    this.setState(prevState => ({showComingSoonModal: !prevState.showComingSoonModal}))
-
-  // showHelp = showHelp => this.setState({showHelp})
-
   getNetworkName = networkId => {
     switch (Number(networkId)) {
       case 1:
@@ -143,7 +135,6 @@ class App extends Component {
   }
 
   initDApp = async () => {
-    console.log(211)
     if (this.maker) {
       this.makerAttachEvents()
       await this.maker.authenticate()
@@ -158,27 +149,44 @@ class App extends Component {
     this.setState({ethPrice: await ethPrice.toNumber()})
   }
 
+  handleSubmit = event => {
+    event.preventDefault()
+    this.toggleDialog()
+  }
+
+  handleChangeInput = name => event => this.setState({[name]: event.target.value})
+
   createAlert = async () => {
-    const {email, walletAddress, minRatio, maxRatio} = this.state
+    const {email, minRatio, maxRatio, walletAddress} = this.state
 
+    let rawRes
+    try {
+      this.setState({creatingAlert: true})
 
-    const rawRes = await fetch('https://cdp-alert-api.now.sh/alerts', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'email': email,
-        'cdps': this.getWalletCdps().map(cdp => String(cdp.id)),
-        'address': walletAddress,
-        'min': minRatio,
-        'max': maxRatio
+      rawRes = await fetch('https://cdp-alert-api.now.sh/alerts', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'email': email,
+          'cdps': this.getWalletCdps().map(cdp => String(cdp.id)),
+          'address': walletAddress,
+          'min': minRatio,
+          'max': maxRatio
+        })
       })
-    })
-
-    const jsonRes = rawRes.json()
-
-    this.setState({alertCreatedStatus: jsonRes.type === 200}, () => this.toggleNotice())
+    } catch (e) {
+      // mindfullness
+    } finally {
+      this.setState({
+        creatingAlert: false,
+        alertCreatedSuccess: rawRes.ok
+      }, async () => {
+        await this.toggleDialog()
+        await this.toggleNotice()
+      })
+    }
   }
 
   changeStep = step => this.setState({step})
@@ -237,17 +245,18 @@ class App extends Component {
   render () {
     const {
       step,
+      email,
+      minRatio,
+      maxRatio,
       web3Status,
       walletCdps,
       networkId,
       ethPrice,
       walletAddress,
-      eth,
-      cdpCreationStep,
       showForm,
       showNotice,
-      showComingSoonModal,
-      // showHelp
+      alertCreatedSuccess,
+      creatingAlert
     } = this.state
 
     const {LS} = this
@@ -374,38 +383,54 @@ class App extends Component {
                     )}
                   </Block>
 
-                  <NewAlertForm>
-                    <p>Set up a new alert</p>
-                    <p>Collateralization ratio under <NewAlertNumberInput/> or
-                      over <NewAlertNumberInput/> becomes elegible for liquidation.</p>
-                    <p><span>Email to receive notifications:</span> <NewAlertEmailInput/></p>
-                  </NewAlertForm>
+                  <form onSubmit={event => this.handleSubmit(event)}>
+                    <NewAlertForm>
+                      <p>Set up a New Alert</p>
+                      <p>Collateralization ratio under <NewAlertNumberInput
+                        onChange={this.handleChangeInput('minRatio')}
+                        value={minRatio}/><Percent/> or
+                        over <NewAlertNumberInput
+                          value={maxRatio}
+                          onChange={this.handleChangeInput('maxRatio')}/><Percent/> becomes
+                        elegible for
+                        liquidation.</p>
+                      <p><span>Email to receive notifications:</span> <NewAlertEmailInput
+                        value={email}
+                        onChange={this.handleChangeInput('email')}/></p>
+                    </NewAlertForm>
 
-                  <Block>
-                    <Button
-                      type="button"
-                      onClick={() => this.toggleDialog()}
-                    >
-                      Create Alert
-                    </Button>
-                  </Block>
+                    <Block>
+                      <Button type="submit">Create Alert</Button>
+                    </Block>
+                  </form>
                 </Section>
 
                 {showForm && (
                   <Modal>
                     <Dialog>
-                      <h3>Set up a new Alert</h3>
+                      <h3>Confirm Alert Creation</h3>
                       <p>
-                        Current ETH price: <DollarSign/><span>{eth} </span>.
+                        Ratios: under <span>{minRatio}</span>% and over <span>{maxRatio}</span>%.
                       </p>
-                      <p>Are you sure you want to proceed with this transaction?</p>
+                      <p>Email for notifications: {email}</p>
+                      <p>Are you sure you want to create this alert?</p>
                       <div className="buttons">
-                        <CancelDialogButton onClick={() => this.toggleDialog()}>
-                          Cancel
-                        </CancelDialogButton>
-                        <AcceptDialogButton onClick={() => this.createAlert()}>
-                          Create Alert
-                        </AcceptDialogButton>
+                        {!creatingAlert && (
+                          <React.Fragment>
+                            <CancelDialogButton onClick={() => this.toggleDialog()}>
+                              Cancel
+                            </CancelDialogButton>
+                            <AcceptDialogButton onClick={() => this.createAlert()}>
+                              Confirm
+                            </AcceptDialogButton>
+                          </React.Fragment>
+                        )}
+                        {creatingAlert && (
+                          <img
+                            src="/images/creating-alert.svg"
+                            alt="Creating Alert"
+                          />
+                        )}
                       </div>
                     </Dialog>
                   </Modal>
@@ -414,28 +439,13 @@ class App extends Component {
                 {showNotice && (
                   <Modal>
                     <Dialog>
-                      <h3>Waiting...</h3>
-                      {cdpCreationStep === 1 && <p>We will proceed creating the new CDP.</p>}
-                      <p>Please accept pending transaction on your wallet.</p>
-                      <img src="/images/waiting-coin.svg" alt="Waiting"/>
-                    </Dialog>
-                  </Modal>
-                )}
-
-                {showComingSoonModal && (
-                  <Modal>
-                    <Dialog>
-                      <h3>Coming Soon!</h3>
-                      <p>This feature will be available in future releases.</p>
-                      <img
-                        className="coming-soon"
-                        src="/images/coming-soon.svg"
-                        alt="Coming Soon"
-                      />
+                      <h3>{alertCreatedSuccess ? 'Success!' : 'Error...'}</h3>
+                      <p>{alertCreatedSuccess ?
+                        'Alert has been created.' :
+                        `Alert counldn't been created. Please try again.`}</p>
                       <div className="buttons">
-                        <CancelDialogButton onClick={() => this.toggleComingSoonModal()}>
-                          Close
-                        </CancelDialogButton>
+                        <CancelDialogButton
+                          onClick={() => this.toggleNotice()}>Close</CancelDialogButton>
                       </div>
                     </Dialog>
                   </Modal>
