@@ -8,11 +8,11 @@ var mailgun = require('mailgun-js')({
   domain
 })
 
-function sendAlertRegistrationEmail ({ email, cdpId, address, min, max }) {
+function sendAlertRegistrationEmail ({ email, cdps, address, min, max }) {
   const text = `A new alert has been created with this email address (${email}).
 
     Details:
-      CDP: ${cdpId}
+      CDPs: ${cdps.join(', ')}
       Wallet Address: ${address}
       Alert parameters:
          - Min: ${min}%
@@ -33,6 +33,7 @@ function sendAlertRegistrationEmail ({ email, cdpId, address, min, max }) {
       if (error) {
         reject(error)
       } else {
+        body.text = text
         resolve(body)
       }
     })
