@@ -11,55 +11,36 @@ injectGlobal`
     margin: 0;
     padding: 0;
     font-size: 16px;
-    font-weight: 600;
 
     * {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Roboto', sans-serif;
     }
   }
 `
 
-export const Layout = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-
-  background-color: ${({theme}) => theme.color.bodyBg};
-
-  width: 100%;
-  min-height: 100vh;
-
-  button {
-    cursor: pointer;
-  }
-`
-
 export const Header = styled.header`
-  flex: 1;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 50px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  padding: 0;
-  text-align: center;
-
-  h1 {
-    margin: 0;
-    font-size: 3rem;
-    font-variant: small-caps;
-    color: ${({theme}) => theme.color.main};
-  }
-
-  h4 {
-    margin: 0;
-    padding: 0.2rem 0.5rem;
-    user-select: none;
-    font-size: 0.8rem;
-    font-variant: small-caps;
-    color: ${({theme}) => theme.color.sectionTag};
-    background-color: ${({theme}) => theme.color.demoBg};
+  h3 {
+    position: relative;
+    width: 1000px;
+    text-align: left;
+    margin: auto 0;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.33;
+    color: ${({theme}) => theme.color.white};
+  }  
+  
+  &.black-bg {
+    background-color: ${({theme}) => theme.color.darkText};
   }
 `
 
@@ -67,430 +48,396 @@ export const Main = styled.main`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`
-
-export const Footer = styled.footer`
-  flex: 1;
-  display: flex;
-  flex-direction: column-reverse;
-  min-width: 63rem;
-  max-width: 63rem;
-  width: 100%;
-  font-weight: 400;
-  padding-bottom: 0.5rem;
-
-  > p {
-    margin: 1rem 0 0;
-    text-align: center;
-
-    > span {
-      color: ${({theme}) => theme.color.heart};
-      font-size: 1.5rem;
-      vertical-align: sub;
-    }
-  }
-`
-
-const GithubLink = styled.a.attrs({
-  href: 'https://github.com/protofire/open-cdp',
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})``
-
-const Octocat = styled.img.attrs({
-  src: '/images/octocat.png',
-  alt: 'GitHub'
-})`
-  max-height: 2rem;
-  vertical-align: text-bottom;
-`
-
-export const Github = () => (
-  <GithubLink>
-    <Octocat/>
-  </GithubLink>
-)
-
-const ProtofireLink = styled.a.attrs({
-  href: 'https://protofire.io',
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})`
-  margin-left: 0.3rem;
-`
-
-const ProtofireLogo = styled.img.attrs({
-  src: '/images/protofire.png',
-  alt: 'Protofire'
-})`
-  max-height: 2rem;
-  vertical-align: bottom;
-`
-
-export const Protofire = () => (
-  <ProtofireLink>
-    <ProtofireLogo/>
-  </ProtofireLink>
-)
-
-export const Section = styled.section`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-
-  margin: 0.5rem 0 0.5rem;
-  padding: 2.4rem 0 0;
-
-  min-width: 35rem;
-
-  font-size: 1.2rem;
-  font-weight: 500;
-
-  background-color: ${({theme}) => theme.color.sectionBg};
-  border: 2px solid ${({theme}) => theme.color.main};
-  border-radius: ${({theme}) => theme.border.radius};
-
-  h2 {
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    margin: 0;
-    padding: 0.5rem 0.75rem;
-    color: ${({theme}) => theme.color.sectionTag};
-    font-size: 1.2rem;
-    background-color: ${({theme}) => theme.color.main};
-    border-bottom-right-radius: ${({theme}) => theme.border.radius};
-    border-top-left-radius: ${({theme}) => theme.border.radius};
-  }
-  
-  &.general-info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    border: none;
-    padding: 0;
-
-    div:first-of-type {
-      font-size: 0.85rem;
-    }
-
-    div:last-of-type {
-      font-size: 1.6rem;
-    }
-  }
-`
-
-export const WalletSelection = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   align-items: center;
 
-  margin: 1rem 0;
+  background: url('/images/background.png');
+  background-size: cover;
+
+  width: 100%;
+  min-height: 100vh;
+
+  &.white-bg {
+    background: ${({theme}) => theme.color.white};
+  }
+
+  hr {
+    width: 200px;
+    height: 0;
+    margin: 1px auto 0;
+    border: solid 1px ${({theme}) => theme.color.main};
+  }
 
   button {
-    width: 20rem;
-    height: 3rem;
-    margin: 0.5rem auto;
-    border: 0;
-    border-radius: ${({theme}) => theme.border.radius};
-    font-variant: petite-caps;
-    font-size: 1.4rem;
-    font-weight: 500;
+    cursor: pointer;
     
-    color: ${({theme}) => theme.color.sectionTag};
-    background-color: ${({theme}) => theme.color.secondary};
-    
-    &:disabled {
-      color: ${({theme}) => theme.color.gray};
-      background-color: ${({theme}) => theme.color.softGray};
-      cursor: not-allowed;
+    &:focus {
+      outline:0;
     }
-    
   }
 `
 
-export const TokenIconWrapper = styled.div`
-  span:first-of-type {
-    margin-left: 0.4rem;
-    font-size: 1.6rem;
-  }
-
-  span:last-of-type {
-    font-size: 1.1rem;
-    font-variant: petite-caps;
-  }
-`
-
-export const IconETH = styled.img.attrs({
-  src: '/images/token-eth.png',
-  alt: 'ETH'
-})`
-  height: 1.5rem;
-  margin: 0 0.3rem;
-  vertical-align: text-bottom;
-`
-
-const DollarSignStyled = styled.i`
-  color: ${({theme}) => theme.color.gray};
-  font-size: 0.7rem;
-  font-style: normal;
-  font-weight: 600;
-`
-
-export const DollarSign = () => <DollarSignStyled>U$D</DollarSignStyled>
-
-export const Address = styled.div`
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: ${({theme}) => theme.color.text};
-`
-
-export const HelpIcon = styled.i`
+export const Section = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  flex: 1;
 
-  width: 1rem;
-  height: 1rem;
-  color: ${({theme}) => theme.color.main};
-  border: 2px solid ${({theme}) => theme.color.help};
-  border-radius: 50%;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 600;
+  position: relative;
+  text-align: center;
+
+  &.home {
+    * {
+      color: ${({theme}) => theme.color.white};
+    }
+
+    h2 {
+      -webkit-backdrop-filter: blur(30px);
+      backdrop-filter: blur(30px);
+      font-size: 50px;
+      font-weight: bold;
+      line-height: 1.32;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+      text-transform: uppercase;
+      max-width: 800px;
+      margin-top: auto;
+    }
+    
+    p {
+      font-size: 30px;
+      font-weight: normal;
+      line-height: 1.3;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+      margin-bottom: auto;
+    }
+
+    button {
+      width: 207px;
+      height: 44px;
+      border: solid 1px ${({theme}) => theme.color.white};
+      background-color: transparent;
+      font-size: 18px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+  }
+  
+  &.login {
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      
+      width: 400px;
+      height: 520px;
+      padding: 23px 0;
+
+      background-color: ${({theme}) => theme.color.white};
+      box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.75);
+
+      h2 {
+        color: ${({theme}) => theme.color.darkText};
+        font-size: 24px;
+        font-weight: bold;
+        line-height: 1.33;
+        text-transform: capitalize;
+        margin: 0;
+      }
+      
+      div:last-of-type {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        
+        height: 360px;
+      
+        button {
+          width: 305px;
+          height: 67px;
+          border: solid 1px ${({theme}) => theme.color.darkText};
+          background-color: transparent;
+          color: ${({theme}) => theme.color.darkText};
+          font-weight: bold;
+  
+          &:hover:enabled {
+            border-color: ${({theme}) => theme.color.main};
+            background-color: ${({theme}) => theme.color.main};
+            color: ${({theme}) => theme.color.white};
+          }
+          
+          &:disabled {
+            cursor: not-allowed;
+          }
+          
+          &.demo {
+            position: relative;
+            font-size: 36px;
+            line-height: 1.33;
+            
+            &::after {
+              content: 'Connected';
+              font-size: 13px;
+              font-weight: normal;
+              line-height: 1.38;
+              color: ${({theme}) => theme.color.main};
+              position: absolute;
+              right: 0;
+              bottom: -20px;
+            }
+          }
+          
+          &.metamask {
+            font-size: 28px;
+            line-height: 1.32;
+            padding-left: 40px;
+            background: url('/images/metamask.png') no-repeat 31px 14px;
+            background-size: 43px 40px;
+          }
+
+          &.ledger {
+            background: url('/images/ledger.png') no-repeat center center;
+            background-size: 156px 42px;
+          }
+
+          &.trezor {
+            background: url('/images/trezor.png') no-repeat center center;
+            background-size: 158px 45px;
+          }
+        }
+      }
+    }
+  }
+  
+  &.cdps {
+    padding-top: 60px;
+
+    h2 {
+      font-size: 36px;
+      font-weight: bold;
+      line-height: 1.33;
+      color: ${({theme}) => theme.color.darkText};
+    }
+    
+    > div:first-of-type {
+      display: flex;
+      align-items: center;
+      margin: 45px 0;
+
+      span {
+        margin-left: 10px;
+        font-size: 22px;
+        font-weight: normal;
+        line-height: 1.32;
+        color: ${({theme}) => theme.color.darkText};
+        
+        strong.price {
+          font-weight: bold;
+        }
+      }
+    }
+    
+    .no-cdps-found {
+      font-size: 22px;
+      font-weight: normal;
+    }
+  }
+`
+
+export const EthIcon = styled.img.attrs({
+  src: '/images/ethereum.png',
+  alt: 'ETH'
+})`
+  height: 34px;
+  width: 21px;
 `
 
 export const WalletCdpsTable = styled.table.attrs({
   cellPadding: 0,
   cellSpacing: 0
 })`
-  width: 100%;
-  font-size: 1rem;
+  width: 895px;
+  font-size: 16px;
+  font-weight: normal;
   text-align: center;
   
-  border: 1px solid ${({theme}) => theme.color.lightGray};
-  border-left: none;
-  border-right: none;
-
-  thead,
-  tbody {
-    display: block;
+  thead th {
+    color: ${({theme}) => theme.color.darkText};
+    font-weight: bold;
+    line-height: 1.31;
   }
 
-  thead th {
-    color: ${({theme}) => theme.color.main};
+  tbody td {
+    border-top: 1px solid ${({theme}) => theme.color.lightGray};
   }
 
   tbody,
   thead {
     td,
     th {
-      width: 12rem;
-      padding: 0.24rem 0;
+      height: 42px;
+      width: 192px;
     }
 
     td:first-of-type,
     th:first-of-type {
-      width: 8rem;
+      width: 128px;
     }
 
     td:last-of-type,
     th:last-of-type {
-      width: 13rem;
+      width: 208px;
     }
   }
 
   tbody {
-    max-height: 10rem;
-    overflow-y: auto;
-    overflow-x: hidden;
-    
-    tr.coloredBg {
-      background-color: ${({theme}) => theme.color.aliceBlue};
-    }
-    
-    
-    td.bold {
-      font-weight: 600;
-    }
-    
     td.green {
-      color: ${({theme}) => theme.color.collatGreen};
+      color: ${({theme}) => theme.color.main};
     }
     
     td.red {
-      color: ${({theme}) => theme.color.collatRed};
+      color: ${({theme}) => theme.color.red};
     }
-    
+  }
+  
+  td:last-of-type {
+    div {
+      display: flex;
+      justify-content: space-between;
+      margin: 0;
+    }
   }
 
   button {
-    padding: 0.3rem 0.4rem;
-    margin: 0 1px;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 0.83;
+    color: ${({theme}) => theme.color.darkText};
+    background-color: transparent;
     border: 0;
-    border-radius: ${({theme}) => theme.border.radius};
-    background-color: ${({theme}) => theme.color.main};
-    color: ${({theme}) => theme.color.sectionBg};
-    font-size: 0.9rem;
-    font-weight: 500;
-    font-variant: petite-caps;
-
+    
     &:hover {
-      background-color: ${({theme}) => theme.color.secondary};
+      cursor: default;
     }
 
     &:disabled {
       cursor: not-allowed;
-      color: ${({theme}) => theme.color.softGray};
-      background-color: ${({theme}) => theme.color.gray};
     }
   }
 `
 
-export const Block = styled.div`
+export const NewAlertForm = styled.form`
   display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  position: relative;
-
-  margin: 1rem 0;
-
-  label {
-    div:nth-child(1) {
-      display: flex;
-      justify-content: flex-start;
-      position: relative;
-
-      ${HelpIcon} {
-        margin-left: 0.5rem;
-      }
-    }
-
-    div:nth-child(2) {
-      position: relative;
-
-      span {
-        color: ${({theme}) => theme.color.gray};
-        font-size: 2rem;
-        font-weight: 400;
-        position: absolute;
-        top: 0.3rem;
-        right: 0.5rem;
-      }
-    }
-
-    div:nth-child(3) {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-    }
-  }
-
-  .eth-in-usd {
-    color: ${({theme}) => theme.color.gray};
-    font-size: 0.8rem;
-    font-style: normal;
-  }
-
-  .no-cdps-found {
-    font-style: italic;
-  }
-`
-
-export const NewAlertForm = styled(Block)`
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 895px;
+  margin: auto 0 20px;
   
   p {
-    width: 100%;
-    margin: 0.8rem 0;
-    text-align: center;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.38;
+    text-align: left;
+    margin: 0;
+    color: ${({theme}) => theme.color.darkText};
+    
+    input:first-of-type {
+      color: ${({theme}) => theme.color.red};
+    }
+    
+    input:last-of-type {
+      color: ${({theme}) => theme.color.main};
+    }
   }
   
-  p:first-of-type {
-    font-variant: petite-caps;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: ${({theme}) => theme.color.main};
+  > div {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
   }
 `
 
 const Input = styled.input`
   text-align: center;
-  border: 2px solid ${({ theme }) => theme.color.softGray};
+  border: 2px solid ${({theme}) => theme.color.softGray};
   background-color: rgba(0, 0, 0, 0.03);
-  border-radius: ${({ theme }) => theme.border.radius};
 
   &::placeholder {
-    color: ${({ theme }) => theme.color.softGray};
+    color: ${({theme}) => theme.color.softGray};
   }
 
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;
   }
-`;
+`
 
 export const NewAlertNumberInput = styled(Input).attrs({
-  type: "number",
+  type: 'number',
   required: true,
-  min: 150,
   step: 1
 })`
-  max-width: 5.3rem;
-  font-size: 1.5rem;
-  font-weight: 500;
-  padding: 0;
+  max-width: 57px;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: left;
+  padding: 0 0 0 10px;
   margin: 0;
-  min-height: 2rem;
-  line-height: 2rem;
+  border: 0;
+  border-bottom: solid 1px ${({theme}) => theme.color.lightGray};
+  background-color: transparent;
   -moz-appearance: textfield;
 
   &:focus {
     outline: none;
-    border: 2px solid ${({ theme }) => theme.color.gray};
+    border-bottom-color: ${({theme}) => theme.color.darkText};
   }
-`;
+`
 
 export const NewAlertEmailInput = styled(NewAlertNumberInput).attrs({
-  type: "email",
+  type: 'email',
   required: true
 })`
-  min-width: 28rem;
-  max-width: 28rem;
-  font-size: 1.2rem;
+  min-width: 200px;
+  font-size: 14px;
   font-weight: 400;
-`;
+  color: ${({theme}) => theme.color.darkText};
+  padding: 0 5px;
+  text-align: left;
+  
+  &::placeholder {
+    color: ${({theme}) => theme.color.placeholder};
+  }
+`
 
 const PercentWrapper = styled.span`
-  margin: 0 0.3rem 0 -1.3rem;
-`;
+  margin: 0 5px 0 -16px;
+`
 
 export const Percent = () => <PercentWrapper>%</PercentWrapper>
 
 export const Button = styled.button.attrs({
-  type: 'button'
+  type: 'submit'
 })`
-  color: ${({theme}) => theme.color.sectionTag};
-  border: none;
-  background-color: ${({theme}) => theme.color.secondary};
-  border-radius: ${({theme}) => theme.border.radius};
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 500;
-  line-height: 2rem;
-  padding: 0.5rem 0.8rem;
-  font-variant: petite-caps;
+  width: 82px;
+  height: 26px;
+  color: ${({theme}) => theme.color.darkText};
+  background-color: transparent;
+  border: solid 1px ${({theme}) => theme.color.darkText};
+  text-transform: capitalize;
+
+  &:hover {
+    cursor: pointer;
+  }
+  
+  &:focus {
+    outline:0;
+  }
 
   &:disabled {
     cursor: not-allowed;
-    color: ${({theme}) => theme.color.softGray};
-    background-color: ${({theme}) => theme.color.gray};
   }
 `
 
@@ -507,7 +454,7 @@ export const Modal = styled.div`
   align-items: center;
 
   z-index: 1000;
-  background-color: ${({theme}) => theme.color.modalBg};
+  background: rgba(0,0,0,0.1);
 `
 
 export const Dialog = styled.div`
@@ -516,91 +463,52 @@ export const Dialog = styled.div`
   justify-content: center;
   align-items: center;
 
-  min-width: 38rem;
-  max-width: 38rem;
-  width: 100%;
-
-  background-color: ${({theme}) => theme.color.sectionBg};
-  border: 4px solid ${({theme}) => theme.color.main};
-  border-radius: ${({theme}) => theme.border.radius};
-  
+  width: 400px;
+  height: 414px;
+  background-color: ${({theme}) => theme.color.white};
+  box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.75);
+    
   h3 {
-    font-size: 1.5rem;
-    font-variant: petite-caps;
-    color: ${({theme}) => theme.color.main}
+    font-size: 24px;
+    color: ${({theme}) => theme.color.darkText};
+    margin-bottom: 35px;
   }
-
+  
   p {
-    margin: 0.5rem 0;
-    font-size: 1.1rem;
+    margin: 0;
+    font-size: 16px;
     font-weight: 400;
+    line-height: 1.31;
+    text-align: center;
+    
+    &:first-of-type {
+      max-width: 292px;
+      margin-top: 45px;
+    }
 
-    span {
+    &:last-of-type {
+      max-width: 260px;
+      margin: 20px 0 75px;
+    }
+
+    span.bold {
       font-weight: 600;
+    }
+
+    span.green {
+      color: ${({theme}) => theme.color.main};
+    }
+
+    span.red {
+      color: ${({theme}) => theme.color.red};
     }
   }
 
-  img {
-    width: 6rem;
-    height: 6rem;
-    margin: 0.5rem 0 1rem;
-  }
-
-  img.coming-soon {
-    margin: 1.5rem 0 0.5rem;
-  }
-
-  div.buttons {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 1rem 0 1.5rem;
-    width: 100%;
-  }
-
-  a.tx-etherscan,
-  &:visited,
-  &:active {
-    color: ${({theme}) => theme.color.main};
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: none;
-  }
-`
-
-const DialogButton = styled(Button)`
-  font-size: 1.2rem;
-  line-height: 1.6rem;
-  padding: 0.4rem 0.9rem;
-`
-
-export const AcceptDialogButton = styled(DialogButton)`
-  background-color: ${({theme}) => theme.color.secondary};
-`
-
-export const CancelDialogButton = styled(DialogButton)`
-  background-color: ${({theme}) => theme.color.softGray};
-`
-
-export const Web3ScreenStyled = styled.div`
-  max-width: 30rem;
-  padding: 1rem 3rem;
-  margin: auto;
-
-  text-align: center;
-  color: white;
-
-  background-color: ${({theme}) => theme.color.main};
-  border: 2px solid ${({theme}) => theme.color.main};
-  border-radius: ${({theme}) => theme.border.radius};
-
-  p {
-    line-height: 1.5rem;
-    font-weight: 500;
-  }
-
-  a,
-  &:visited {
-    color: ${({theme}) => theme.color.sectionTag};
+  button {
+    width: 60px;
+    height: 38px;
+    font-size: 20px;
+    background-color: transparent;
+    border: solid 1px ${({theme}) => theme.color.darkText};
   }
 `
