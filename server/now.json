@@ -1,0 +1,9 @@
+{
+  "name": "cdp-alert-api",
+  "alias": "cdp-alert-api.now.sh",
+  "env": {
+    "NODE_ENV": "production",
+    "MAILGUN_APIKEY": "@mailgun_apikey"
+  },
+  "type": "npm"
+}
