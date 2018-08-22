@@ -29,8 +29,7 @@ class App extends Component {
       ...this.emptyInitialState()
     }
 
-    this.maker = Maker.create('kovan')
-    this.initDApp()
+    // this.initDApp()
   }
 
   emptyInitialState = () => ({
@@ -39,8 +38,16 @@ class App extends Component {
     email: '',
     minRatio: '175',
     maxRatio: '300',
-    showNotice: false
+    showNotice: false,
+    walletCdps: this.getWalletCdps()
   })
+
+  initDApp = async () => {
+    this.maker = Maker.create('kovan')
+    await this.makerAttachEvents()
+    await this.maker.authenticate()
+    await this.updateEthPrice()
+  }
 
   makerAttachEvents = () => {
     this.maker.on('web3/AUTHENTICATED', async eventObj => {
@@ -65,15 +72,6 @@ class App extends Component {
 
     return newState
   })
-
-  initDApp = async () => {
-    if (this.maker) {
-      await this.makerAttachEvents()
-      await this.maker.authenticate()
-      await this.updateEthPrice()
-    }
-    this.setState({walletCdps: await this.getWalletCdps()})
-  }
 
   updateEthPrice = async () => {
     const priceService = this.maker.service('price')
@@ -167,7 +165,7 @@ class App extends Component {
   render () {
     const {LS} = this
     const {step, email, minRatio, maxRatio, walletCdps, ethPrice, showNotice} = this.state
-
+console.log(this.state)
     return (
       <ThemeProvider theme={theme}>
         <React.Fragment>
