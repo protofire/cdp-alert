@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Maker from '@makerdao/dai'
 import { ThemeProvider } from 'styled-components'
 
+import { web3Checker, Web3States } from './utils/web3'
 import theme from './utils/theme'
 import formatNumber from './utils/format-number'
 import {
@@ -28,8 +29,6 @@ class App extends Component {
     this.state = {
       ...this.emptyInitialState()
     }
-
-    // this.initDApp()
   }
 
   emptyInitialState = () => ({
@@ -38,15 +37,22 @@ class App extends Component {
     email: '',
     minRatio: '175',
     maxRatio: '300',
+    working: true,
+    creationSuccess: null,
     showNotice: false,
     walletCdps: this.getWalletCdps()
   })
 
-  initDApp = async () => {
-    this.maker = Maker.create('kovan')
-    await this.makerAttachEvents()
-    await this.maker.authenticate()
-    await this.updateEthPrice()
+  initMetamask = async () => {
+    const web3Check = await web3Checker()
+    if (web3Check.res === Web3States.OK
+      && [1, 42].includes(web3Check.networkId)
+      && web3Check.account) {
+      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan')
+      await this.makerAttachEvents()
+      await this.maker.authenticate()
+      await this.updateEthPrice()
+    }
   }
 
   makerAttachEvents = () => {
@@ -68,13 +74,16 @@ class App extends Component {
       newState.email = ''
       newState.minRatio = '175'
       newState.maxRatio = '300'
+    } else {
+      newState.working = true
+      newState.creationSuccess = null
     }
 
     return newState
   })
 
   updateEthPrice = async () => {
-    const priceService = this.maker.service('price')
+    const priceService = await this.maker.service('price')
     const ethPrice = await priceService.getEthPrice()
     this.setState({ethPrice: await ethPrice.toNumber()})
   }
@@ -87,11 +96,14 @@ class App extends Component {
     this.createAlert()
   }
 
-  createAlert = () => {
-    const {email, minRatio, maxRatio, walletAddress} = this.state
+  createAlert = async () => {
+    const {
+      email, minRatio, maxRatio, walletAddress = '0x0000000000000000000000000000000000000000'
+    } = this.state
 
+    let res
     try {
-      fetch('https://cdp-alert-api.now.sh/alerts', {
+      res = await fetch('https://cdp-alert-api.now.sh/alerts', {
         method: 'post',
         headers: {
           'Content-Type': 'application/json'
@@ -106,6 +118,11 @@ class App extends Component {
       })
     } catch (e) {
       // mindfullness
+    } finally {
+      this.setState({
+        creationSuccess: res.ok,
+        working: false
+      })
     }
   }
 
@@ -164,8 +181,10 @@ class App extends Component {
 
   render () {
     const {LS} = this
-    const {step, email, minRatio, maxRatio, walletCdps, ethPrice, showNotice} = this.state
-console.log(this.state)
+    const {
+      step, email, minRatio, maxRatio, walletCdps, ethPrice, showNotice, working, creationSuccess
+    } = this.state
+
     return (
       <ThemeProvider theme={theme}>
         <React.Fragment>
@@ -281,17 +300,29 @@ console.log(this.state)
                 {showNotice && (
                   <Modal>
                     <Dialog>
-                      <h3>CDP Alert Created</h3>
+                      {working && <h3>Creating Alarm</h3>}
+                      {!working && creationSuccess && <h3>CDP Alert Created</h3>}
+                      {!working && !creationSuccess && <h3>Alert Creation Error</h3>}
                       <hr/>
                       <hr/>
-                      <p>From now on you will receive email alerts to <span
-                        className="bold">{email}</span></p>
-                      <p>
-                        When the collateralization ratio goes under <span
-                        className="red">{minRatio}%</span> or
-                        over <span className="green">{maxRatio}%</span>
-                      </p>
-                      <button onClick={() => this.toggleNotice()}>OK</button>
+                      {working &&
+                      <p className="one-line">Please wait, this should not take too long.</p>}
+                      {!working && creationSuccess && (
+                        <React.Fragment>
+                          <p>From now on you will receive email alerts to <span
+                            className="bold">{email}</span></p>
+                          <p>
+                            When the collateralization ratio goes under <span
+                            className="red">{minRatio}%</span> or
+                            over <span className="green">{maxRatio}%</span>
+                          </p>
+                        </React.Fragment>
+                      )}
+                      {!working && !creationSuccess && (
+                        <p className="one-line">There was an error while trying to create the alarm.
+                          Please try again.</p>)}
+                      {working && <img src="/images/working.svg" alt="Creating alarm"/>}
+                      {!working && <button onClick={() => this.toggleNotice()}>Close</button>}
                     </Dialog>
                   </Modal>
                 )}

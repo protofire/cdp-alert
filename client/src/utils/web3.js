@@ -19,5 +19,5 @@ export const web3Checker = async function() {
 
   const networkId = await web3.eth.net.getId();
 
-  return { res: Web3States.OK, networkId };
+  return { res: Web3States.OK, networkId, account: accounts[0] };
 };

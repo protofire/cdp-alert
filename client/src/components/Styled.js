@@ -490,6 +490,11 @@ export const Dialog = styled.div`
       max-width: 260px;
       margin: 20px 0 75px;
     }
+    
+    &.one-line {
+      max-width: 300px;
+      margin: 65px 0 75px;
+    }
 
     span.bold {
       font-weight: 600;
@@ -505,7 +510,7 @@ export const Dialog = styled.div`
   }
 
   button {
-    width: 60px;
+    width: 76px;
     height: 38px;
     font-size: 20px;
     background-color: transparent;
