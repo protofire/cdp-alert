@@ -29,6 +29,8 @@ class App extends Component {
     this.state = {
       ...this.emptyInitialState()
     }
+
+    this.initMetamask()
   }
 
   emptyInitialState = () => ({
@@ -40,7 +42,8 @@ class App extends Component {
     working: true,
     creationSuccess: null,
     showNotice: false,
-    walletCdps: this.getWalletCdps()
+    demoAccount: '0x0000000000000000000000000000000000000000',
+    metamaskAccount: null
   })
 
   initMetamask = async () => {
@@ -49,6 +52,7 @@ class App extends Component {
       && [1, 42].includes(web3Check.networkId)
       && web3Check.account) {
       this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan')
+      await this.setState({walletAddress: web3Check.account, networkId: web3Check.networkId})
       await this.makerAttachEvents()
       await this.maker.authenticate()
       await this.updateEthPrice()
@@ -57,12 +61,15 @@ class App extends Component {
 
   makerAttachEvents = () => {
     this.maker.on('web3/AUTHENTICATED', async eventObj => {
-      const {account: walletAddress} = eventObj.payload
-      await this.setState({walletAddress})
+      const {account: metamaskAccount} = eventObj.payload
+      await this.setState({ metamaskAccount })
     })
 
     this.maker.on('web3/DEAUTHENTICATED', async () => {
-      await this.setState({walletAddress: this.LS})
+      await this.setState({
+        step: 2,
+        metamaskAccount: null
+      })
     })
   }
 
@@ -97,9 +104,7 @@ class App extends Component {
   }
 
   createAlert = async () => {
-    const {
-      email, minRatio, maxRatio, walletAddress = '0x0000000000000000000000000000000000000000'
-    } = this.state
+    const {email, minRatio, maxRatio, selectedWallet, demoAccount, metamaskAccount} = this.state
 
     let res
     try {
@@ -111,7 +116,7 @@ class App extends Component {
         body: JSON.stringify({
           'email': email,
           'cdps': this.getWalletCdps().map(cdp => String(cdp.id)),
-          'address': walletAddress,
+          'address': selectedWallet === 'demo' ? demoAccount : metamaskAccount,
           'min': minRatio,
           'max': maxRatio
         })
@@ -128,70 +133,57 @@ class App extends Component {
 
   changeStep = step => this.setState({step})
 
-  getWalletCdps = () => [
-    {
-      id: 123,
-      borrowedDai: 230.876,
-      lockedEth: 1.923,
-      liquidationPrice: 390.893
-    },
-    {
-      id: 133,
-      borrowedDai: 876,
-      lockedEth: 2.567,
-      liquidationPrice: 400.123
-    },
-    {
-      id: 135,
-      borrowedDai: 50,
-      lockedEth: 0.134,
-      liquidationPrice: 251.785
-    },
-    {
-      id: 189,
-      borrowedDai: 970.897,
-      lockedEth: 28.343,
-      liquidationPrice: 356.98
-    },
-    {
-      id: 235,
-      borrowedDai: 230.876,
-      lockedEth: 1.923,
-      liquidationPrice: 390.893
-    },
-    {
-      id: 267,
-      borrowedDai: 376,
-      lockedEth: 2.567,
-      liquidationPrice: 400.123
-    },
-    {
-      id: 342,
-      borrowedDai: 50,
-      lockedEth: 0.134,
-      liquidationPrice: 251.785
-    },
-    {
-      id: 346,
-      borrowedDai: 8970.897,
-      lockedEth: 38.343,
-      liquidationPrice: 356.98
+  goWithSelectedWallet = async selectedWallet => {
+    switch (selectedWallet) {
+      case 'metamask':
+        break
+      case 'ledger':
+        // tbd
+        break
+      case 'trezor':
+        // tbd
+        break
+      default:
+      case 'demo':
+        this.setState({walletCdps: this.getWalletCdps()})
+        break
     }
+    await this.setState({selectedWallet})
+    this.changeStep(3)
+  }
+
+  getWalletCdps = () => [
+    {id: 123, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
+    {id: 133, borrowedDai: 876, lockedEth: 2.567, liquidationPrice: 400.123},
+    {id: 135, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
+    {id: 189, borrowedDai: 970.897, lockedEth: 28.343, liquidationPrice: 356.98},
+    {id: 235, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
+    {id: 267, borrowedDai: 376, lockedEth: 2.567, liquidationPrice: 400.123},
+    {id: 342, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
+    {id: 346, borrowedDai: 8970.897, lockedEth: 38.343, liquidationPrice: 356.98}
   ]
 
   render () {
     const {LS} = this
     const {
-      step, email, minRatio, maxRatio, walletCdps, ethPrice, showNotice, working, creationSuccess
+      step,
+      email,
+      minRatio,
+      maxRatio,
+      walletCdps,
+      ethPrice,
+      showNotice,
+      working,
+      creationSuccess,
+      metamaskAccount,
+      networkId
     } = this.state
 
     return (
       <ThemeProvider theme={theme}>
         <React.Fragment>
           <Header className={step > 2 ? 'black-bg' : ''}>
-            <h3>
-              CDP Alerts Logo
-            </h3>
+            <h3>CDP Alert</h3>
           </Header>
           <Main className={step > 2 ? 'white-bg' : ''}>
             {step === 1 && (
@@ -212,8 +204,15 @@ class App extends Component {
                     <hr/>
                   </div>
                   <div>
-                    <button className="demo" onClick={() => this.changeStep(3)}>Demo</button>
-                    <button className="metamask" disabled={true}>Metamask</button>
+                    <button className="demo" onClick={() => this.goWithSelectedWallet('demo')}>Demo
+                      <span className="connected">Connected</span>
+                    </button>
+                    <button className="metamask" disabled={!metamaskAccount}
+                            onClick={() => this.goWithSelectedWallet('metamask')}>Metamask
+                      {!metamaskAccount && <span className="allowedNets">(MainNet or Kovan)</span>}
+                      {metamaskAccount && <span
+                        className="connected">Connected to {networkId === 1 ? 'MainNet' : 'Kovan'}</span>}
+                    </button>
                     <button className="ledger" disabled={true}/>
                     <button className="trezor" disabled={true}/>
                   </div>
@@ -230,7 +229,7 @@ class App extends Component {
                     <EthIcon/>
                     <span>
                       Current Eth Price{' '}
-                      <strong>${ethPrice > -1 ? formatNumber(ethPrice) : LS}</strong>
+                      <strong>${ethPrice > -1 ? formatNumber(ethPrice, 2, 2) : LS}</strong>
                     </span>
                   </div>
                   {!walletCdps && <span className="no-cdps-found">..No CDPs found..</span>}

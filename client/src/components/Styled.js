@@ -161,6 +161,8 @@ export const Section = styled.section`
           background-color: transparent;
           color: ${({theme}) => theme.color.darkText};
           font-weight: bold;
+          position: relative;
+          outline: 0;
   
           &:hover:enabled {
             border-color: ${({theme}) => theme.color.main};
@@ -176,17 +178,6 @@ export const Section = styled.section`
             position: relative;
             font-size: 36px;
             line-height: 1.33;
-            
-            &::after {
-              content: 'Connected';
-              font-size: 13px;
-              font-weight: normal;
-              line-height: 1.38;
-              color: ${({theme}) => theme.color.main};
-              position: absolute;
-              right: 0;
-              bottom: -20px;
-            }
           }
           
           &.metamask {
@@ -205,6 +196,26 @@ export const Section = styled.section`
           &.trezor {
             background: url('/images/trezor.png') no-repeat center center;
             background-size: 158px 45px;
+          }
+          
+          span.connected {
+            font-size: 13px;
+            font-weight: normal;
+            line-height: 1.38;
+            color: ${({theme}) => theme.color.main};
+            position: absolute;
+            right: 0;
+            bottom: -20px;
+          }
+          
+          span.allowedNets {
+            position: absolute;
+            top: 45px;
+            left: 100px;
+            width: 135px;
+            font-size: 11px;
+            font-weight: 400;
+            text-align: center;
           }
         }
       }
