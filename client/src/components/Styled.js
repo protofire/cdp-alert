@@ -251,6 +251,7 @@ export const Section = styled.section`
     }
     
     .no-cdps-found {
+      margin: auto 0;
       font-size: 22px;
       font-weight: normal;
     }

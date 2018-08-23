@@ -33,9 +33,13 @@ class App extends Component {
     this.initMetamask()
   }
 
+  componentWillUnmount() {
+    clearInterval(this.updateEthPriceInterval)
+  }
+
   emptyInitialState = () => ({
     step: 1,
-    ethPrice: 298.423,
+    ethPrice: -1,
     email: '',
     minRatio: '175',
     maxRatio: '300',
@@ -52,26 +56,17 @@ class App extends Component {
       && [1, 42].includes(web3Check.networkId)
       && web3Check.account) {
       this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan')
-      await this.setState({walletAddress: web3Check.account, networkId: web3Check.networkId})
+      await this.setState({
+        web3: web3Check.web3,
+        metamaskAccount: web3Check.account,
+        networkId: web3Check.networkId
+      })
       await this.makerAttachEvents()
-      await this.maker.authenticate()
-      await this.updateEthPrice()
+      this.maker.authenticate()
     }
   }
 
-  makerAttachEvents = () => {
-    this.maker.on('web3/AUTHENTICATED', async eventObj => {
-      const {account: metamaskAccount} = eventObj.payload
-      await this.setState({ metamaskAccount })
-    })
-
-    this.maker.on('web3/DEAUTHENTICATED', async () => {
-      await this.setState({
-        step: 2,
-        metamaskAccount: null
-      })
-    })
-  }
+  makerAttachEvents = () => this.maker.on('web3/DEAUTHENTICATED', () => this.initMetamask())
 
   toggleNotice = () => this.setState(prevState => {
     const newState = {
@@ -131,7 +126,13 @@ class App extends Component {
     }
   }
 
-  changeStep = step => this.setState({step})
+  changeStep = async step => {
+    if (step === 3) {
+      await this.updateEthPrice()
+      this.updateEthPriceInterval = window.setInterval(() => this.updateEthPrice(), 5000)
+    }
+    this.setState({step})
+  }
 
   goWithSelectedWallet = async selectedWallet => {
     switch (selectedWallet) {
