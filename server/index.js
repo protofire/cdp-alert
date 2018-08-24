@@ -15,6 +15,9 @@ app.use(
   })
 )
 app.use(bodyParser())
+router.get('/', ctx => {
+  ctx.body = 'CDPAlert API'
+})
 router.use('/alerts', alerts.routes(), alerts.allowedMethods())
 app.use(router.routes()).use(router.allowedMethods())
 
