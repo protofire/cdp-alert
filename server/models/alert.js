@@ -18,12 +18,14 @@ var schema = new Schema({
   address: String,
   min: Number,
   max: Number,
-  createdAt: Date
-})
-
-schema.pre('save', function (next) {
-  this.createdAt = new Date()
-  next()
+  createdAt: {
+    type: Date,
+    default: Date.now()
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const Alert = mongoose.model('Alert', schema)

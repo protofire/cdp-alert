@@ -28,6 +28,9 @@ function sendAlertRegistrationEmail ({ email, cdps, address, min, max }) {
     subject: 'New CDP Alert created',
     text
   }
+  if (process.env.NODE_ENV !== 'production') {
+    return Promise.resolve('OK but email not sent in dev mode.')
+  }
   return new Promise(function (resolve, reject) {
     mailgun.messages().send(data, function (error, body) {
       if (error) {
