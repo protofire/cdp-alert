@@ -85,9 +85,14 @@ class App extends Component {
   })
 
   updateEthPrice = async () => {
-    const priceService = await this.maker.service('price')
-    const ethPrice = await priceService.getEthPrice()
-    this.setState({ethPrice: await ethPrice.toNumber()})
+    let ethPrice = 296.236
+
+    if (this.state.selectedWallet === 'metamask') {
+      const priceService = await this.maker.service('price')
+      ethPrice = (await priceService.getEthPrice()).toNumber()
+    }
+
+    this.setState({ethPrice})
   }
 
   handleChangeInput = name => event => this.setState({[name]: event.target.value})
@@ -135,8 +140,11 @@ class App extends Component {
   }
 
   goWithSelectedWallet = async selectedWallet => {
+    await this.setState({selectedWallet})
+
     switch (selectedWallet) {
       case 'metamask':
+        await this.setState({walletCdps: this.getWalletCdps()})
         break
       case 'ledger':
         // tbd
@@ -146,23 +154,32 @@ class App extends Component {
         break
       default:
       case 'demo':
-        this.setState({walletCdps: this.getWalletCdps()})
+        await this.setState({walletCdps: this.getWalletCdps()})
         break
     }
-    await this.setState({selectedWallet})
+
     this.changeStep(3)
   }
 
-  getWalletCdps = () => [
-    {id: 123, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
-    {id: 133, borrowedDai: 876, lockedEth: 2.567, liquidationPrice: 400.123},
-    {id: 135, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
-    {id: 189, borrowedDai: 970.897, lockedEth: 28.343, liquidationPrice: 356.98},
-    {id: 235, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
-    {id: 267, borrowedDai: 376, lockedEth: 2.567, liquidationPrice: 400.123},
-    {id: 342, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
-    {id: 346, borrowedDai: 8970.897, lockedEth: 38.343, liquidationPrice: 356.98}
-  ]
+  getWalletCdps = () => {
+    switch (this.state.selectedWallet) {
+      case 'metamask':
+        // fetch('')
+        break;
+      default:
+      case 'demo':
+        return [
+          {id: 123, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
+          {id: 133, borrowedDai: 876, lockedEth: 2.567, liquidationPrice: 400.123},
+          {id: 135, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
+          {id: 189, borrowedDai: 970.897, lockedEth: 28.343, liquidationPrice: 356.98},
+          {id: 235, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
+          {id: 267, borrowedDai: 376, lockedEth: 2.567, liquidationPrice: 400.123},
+          {id: 342, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
+          {id: 346, borrowedDai: 8970.897, lockedEth: 38.343, liquidationPrice: 356.98}
+        ]
+    }
+  }
 
   render () {
     const {LS} = this
