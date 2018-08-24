@@ -1,0 +1,327 @@
+{
+	"info": {
+		"_postman_id": "01ef2dd0-fc22-4216-9f4b-5e813c4595ee",
+		"name": "CDPAlert",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create alert",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52c17e18-b427-4f34-ab63-5e793946cb50",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"leo@protofire.com\",\n\t\"address\": \"0xsomething\",\n\t\"min\": 175,\n\t\"max\": 300,\n\t\"cdps\": [\"123\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid alert 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2c7176ea-f316-4d94-a9ba-5a98612a11b8",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response includes missing field\", function () {",
+							"    /address/.test(pm.response)",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address\": \"0xsomething\",\n\t\"min\": 175,\n\t\"max\": 300,\n\t\"cdps\": [\"123\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid alert 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "709fed39-0ea8-42cf-bd23-8718e17326f3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response includes missing field\", function () {",
+							"    /email/.test(pm.response)",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"leo@protofire.com\",\n\t\"min\": 175,\n\t\"max\": 300,\n\t\"cdps\": [\"123\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid alert 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cee835ad-3feb-4f88-9d1a-6bc5ac12de48",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response includes missing field\", function () {",
+							"    /min/.test(pm.response)",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"leo@protofire.com\",\n\t\"address\": \"0xsomething\",\n\t\"max\": 300,\n\t\"cdps\": [\"123\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid alert 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f33f494c-cf32-400f-9b22-c61ee1bdd213",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response includes missing field\", function () {",
+							"    /max/.test(pm.response)",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"leo@protofire.com\",\n\t\"address\": \"0xsomething\",\n\t\"min\": 175,\n\t\"cdps\": [\"123\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid alert 5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "190ed3d8-a44f-46ef-ab9c-37fd2f4443e4",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response includes missing field\", function () {",
+							"    /cdps/.test(pm.response)",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"leo@protofire.com\",\n\t\"address\": \"0xsomething\",\n\t\"min\": 175,\n\t\"max\": 300,\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid alert 6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75915192-c269-4b9f-9e78-70302353d05f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"Response includes missing field\", function () {",
+							"    /cdps/.test(pm.response)",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"leo@protofire.com\",\n\t\"address\": \"0xsomething\",\n\t\"min\": 175,\n\t\"max\": 175,\n\t\"cdps\": []\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/alerts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"alerts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
