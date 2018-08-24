@@ -3,7 +3,9 @@
   "alias": "cdp-alert-api.now.sh",
   "env": {
     "NODE_ENV": "production",
-    "MAILGUN_APIKEY": "@mailgun_apikey"
+    "MAILGUN_APIKEY": "@mailgun_apikey",
+    "DB_URI": "@db_uri",
+    "MAX_ALERT_AGE_DAYS": "60"
   },
   "type": "npm"
 }
