@@ -6,6 +6,12 @@ const bodyParser = require('koa-bodyparser')
 const alerts = require('./alerts')
 const PORT = process.env.PORT || 3000
 
+const { disableOldAlerts } = require('./lib/disable-old-alerts')
+
+setInterval(function () {
+  disableOldAlerts(process.env.MAX_ALERT_AGE_DAYS)
+}, 30 * 1000)
+
 const app = new Koa()
 const router = new Router()
 
