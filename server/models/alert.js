@@ -3,6 +3,8 @@ if (!dbUri) {
   throw new Error('DB_URI not configured. Add it to .env')
 }
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
 mongoose.connect(
   dbUri,
   {
@@ -10,12 +12,20 @@ mongoose.connect(
   }
 )
 
-const Alert = mongoose.model('Alert', {
+var schema = new Schema({
   email: String,
   cdps: [String],
   address: String,
   min: Number,
-  max: Number
+  max: Number,
+  createdAt: Date
 })
+
+schema.pre('save', function (next) {
+  this.createdAt = new Date()
+  next()
+})
+
+const Alert = mongoose.model('Alert', schema)
 
 module.exports = Alert
