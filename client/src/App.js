@@ -41,7 +41,7 @@ class App extends Component {
     step: 1,
     ethPrice: -1,
     email: '',
-    minRatio: '175',
+    minRatio: '200',
     maxRatio: '300',
     working: true,
     creationSuccess: null,
@@ -55,7 +55,7 @@ class App extends Component {
     if (web3Check.res === Web3States.OK
       && [1, 42].includes(web3Check.networkId)
       && web3Check.account) {
-      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan')
+      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan', { log: false})
       await this.setState({
         web3: web3Check.web3,
         metamaskAccount: web3Check.account,
@@ -74,7 +74,7 @@ class App extends Component {
     }
     if (prevState.showNotice) {
       newState.email = ''
-      newState.minRatio = '175'
+      newState.minRatio = '200'
       newState.maxRatio = '300'
     } else {
       newState.working = true
@@ -85,12 +85,9 @@ class App extends Component {
   })
 
   updateEthPrice = async () => {
-    let ethPrice = 296.236
-
-    if (this.state.selectedWallet === 'metamask') {
-      const priceService = await this.maker.service('price')
-      ethPrice = (await priceService.getEthPrice()).toNumber()
-    }
+    const ethPrice = this.state.selectedWallet === 'metamask'
+      ?  (await (await this.maker.service('price')).getEthPrice()).toNumber()
+      :  (await (await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/')).json())[0].price_usd
 
     this.setState({ethPrice})
   }
@@ -169,14 +166,14 @@ class App extends Component {
       default:
       case 'demo':
         return [
-          {id: 123, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
-          {id: 133, borrowedDai: 876, lockedEth: 2.567, liquidationPrice: 400.123},
-          {id: 135, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
-          {id: 189, borrowedDai: 970.897, lockedEth: 28.343, liquidationPrice: 356.98},
-          {id: 235, borrowedDai: 230.876, lockedEth: 1.923, liquidationPrice: 390.893},
-          {id: 267, borrowedDai: 376, lockedEth: 2.567, liquidationPrice: 400.123},
-          {id: 342, borrowedDai: 50, lockedEth: 0.134, liquidationPrice: 251.785},
-          {id: 346, borrowedDai: 8970.897, lockedEth: 38.343, liquidationPrice: 356.98}
+          {id: 3024, borrowedDai: 7536.470, lockedEth: 48.953, liquidationPrice: 226.189},
+          {id: 3025, borrowedDai: 51000, lockedEth: 390.000, liquidationPrice: 390.000},
+          {id: 3042, borrowedDai: 30000, lockedEth: 195.012, liquidationPrice: 226.019},
+          {id: 3051, borrowedDai: 11000, lockedEth: 107.057, liquidationPrice: 150.960},
+          {id: 3058, borrowedDai: 80, lockedEth: 0.489, liquidationPrice: 240.019},
+          {id: 3074, borrowedDai: 95, lockedEth: 0.734, liquidationPrice: 189.999},
+          {id: 3081, borrowedDai: 10, lockedEth: 0.214, liquidationPrice: 68.598},
+          {id: 3083, borrowedDai: 1210, lockedEth: 10, liquidationPrice: 177.775}
         ]
     }
   }
@@ -247,7 +244,7 @@ class App extends Component {
                     <EthIcon/>
                     <span>
                       Current Eth Price{' '}
-                      <strong>${ethPrice > -1 ? formatNumber(ethPrice, 2, 2) : LS}</strong>
+                      <strong>${ethPrice > -1 ? formatNumber(ethPrice, 3, 3) : LS}</strong>
                     </span>
                   </div>
                   {!walletCdps && <span className="no-cdps-found">..No CDPs found..</span>}
@@ -270,14 +267,14 @@ class App extends Component {
                         return (
                           <tr key={cdp.id}>
                             <td>{cdp.id}</td>
-                            <td>{formatNumber(cdp.borrowedDai, 2, 2)}</td>
-                            <td>{formatNumber(cdp.lockedEth, 2, 2)}</td>
+                            <td>{formatNumber(cdp.borrowedDai, 3, 3)}</td>
+                            <td>{formatNumber(cdp.lockedEth, 3, 3)}</td>
                             <td>
-                              ${formatNumber(cdp.liquidationPrice, 2, 2)}
+                              ${formatNumber(cdp.liquidationPrice, 3, 3)}
                             </td>
                             <td
                               className={
-                                (collateral <= 175 && 'red') ||
+                                (collateral <= 200 && 'red') ||
                                 (collateral >= 300 && 'green') ||
                                 ''}>
                               {collateral} %
@@ -302,8 +299,7 @@ class App extends Component {
                       onChange={this.handleChangeInput('minRatio')}
                       value={minRatio}/><Percent/> or over <NewAlertNumberInput
                       value={maxRatio}
-                      onChange={this.handleChangeInput('maxRatio')}/><Percent/> becomes elegible for
-                      liquidation</p>
+                      onChange={this.handleChangeInput('maxRatio')}/><Percent/> will trigger the alert</p>
                     <div>
                       <NewAlertEmailInput
                         placeholder="Email address..."
