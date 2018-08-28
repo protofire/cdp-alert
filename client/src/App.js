@@ -29,8 +29,6 @@ class App extends Component {
     this.state = {
       ...this.emptyInitialState()
     }
-
-    this.initMetamask()
   }
 
   componentWillUnmount() {
@@ -63,6 +61,12 @@ class App extends Component {
       })
       await this.makerAttachEvents()
       this.maker.authenticate()
+    } else {
+      await this.setState({
+        web3: null,
+        metamaskAccount: null,
+        networkId: null
+      })
     }
   }
 
@@ -139,6 +143,9 @@ class App extends Component {
     } else {
       window.clearInterval(this.updateEthPriceInterval)
       this.updateEthPriceInterval = null
+      if (step === 2) {
+        await this.initMetamask()
+      }
     }
     this.setState({step})
   }
