@@ -66,7 +66,11 @@ class App extends Component {
     }
   }
 
-  makerAttachEvents = () => this.maker.on('web3/DEAUTHENTICATED', () => this.initMetamask())
+  makerAttachEvents = () =>
+    this.maker.on('web3/DEAUTHENTICATED', async () => {
+      await this.initMetamask()
+      this.changeStep(2)
+    })
 
   toggleNotice = () => this.setState(prevState => {
     const newState = {
@@ -132,6 +136,9 @@ class App extends Component {
     if (step === 3) {
       await this.updateEthPrice()
       this.updateEthPriceInterval = window.setInterval(() => this.updateEthPrice(), 5000)
+    } else {
+      window.clearInterval(this.updateEthPriceInterval)
+      this.updateEthPriceInterval = null
     }
     this.setState({step})
   }
