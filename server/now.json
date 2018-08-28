@@ -2,6 +2,7 @@
   "name": "cdp-alert-api",
   "alias": "cdp-alert-api.now.sh",
   "env": {
+    "API_URL": "https://cdp-alert-api.now.sh",
     "NODE_ENV": "production",
     "MAILGUN_APIKEY": "@mailgun_apikey",
     "DB_URI": "@db_uri",

@@ -18,8 +18,32 @@ const alertValidator = validate({
   }
 })
 
+const deleteAlertValidator = validate({
+  params: {
+    id: Joi.string().required(),
+    secret: Joi.string().required()
+  }
+})
+
+router.get('/:id/delete/:secret', deleteAlertValidator, async (ctx, next) => {
+  try {
+    const alert = await Alert.findOne({
+      _id: ctx.params.id,
+      secret: ctx.params.secret,
+      disabled: false
+    })
+    if (!alert) {
+      ctx.throw(404, 'Alert not found')
+    }
+    alert.disabled = true
+    await alert.save()
+    ctx.body = 'Alert deleted. You can close this page.'
+  } catch (error) {
+    ctx.throw(404, 'Alert not found')
+  }
+})
+
 router.post('/', alertValidator, async (ctx, next) => {
-  console.log('Valid parameters')
   try {
     const alert = new Alert(ctx.request.body)
     await sendAlertRegistrationEmail(await alert.save())
