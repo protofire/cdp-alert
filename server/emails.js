@@ -21,7 +21,7 @@ function sendAlertRegistrationEmail ({
   id,
   secret
 }) {
-  const deleteLink = `${apiURL}/alerts/${id}/delete/${secret}`
+  const deleteLink = createDeleteAlertLink(apiURL, { id, secret })
   const text = `A new alert has been created with this email address (${email}).
 
     Details:
@@ -41,6 +41,72 @@ function sendAlertRegistrationEmail ({
     subject: 'New CDP Alert created',
     text
   }
+  return sendEmail(data)
+}
+
+async function notifyAlertMin (alert, cdp) {
+  const deleteLink = createDeleteAlertLink(apiURL, alert)
+  const ratio = Math.floor(cdp.collateralizationRatio * 10000) / 100
+  const text = `A CDP Alert has been triggered for this email address (${
+    alert.email
+  }).
+
+    CDP: ${cdp.id} is below the minimum alert threshold: ${ratio}% <= ${
+  alert.min
+}%.
+
+    Details:
+      CDP: ${cdp.id}
+      Wallet Address: ${alert.address}
+      Alert parameters:
+         - Min: ${alert.min}%
+         - Max: ${alert.max}%
+
+    To delete this alert follow this link: ${deleteLink}
+
+    CDP Alert is an Open Source application. Made with ❤ by Protofire.io.
+    `
+  var data = {
+    from: 'Protofire <leo@protofire.io>',
+    to: alert.email,
+    subject: 'Minimum CDP Alert triggered for CDP ' + cdp.id,
+    text
+  }
+  return sendEmail(data)
+}
+
+async function notifyAlertMax (alert, cdp) {
+  const deleteLink = createDeleteAlertLink(apiURL, alert)
+  const ratio = Math.floor(cdp.collateralizationRatio * 10000) / 100
+  const text = `A CDP Alert has been triggered for this email address (${
+    alert.email
+  }).
+
+    CDP: ${cdp.id} is above the maximum alert threshold: ${ratio}% >= ${
+  alert.min
+}%.
+
+    Details:
+      CDP: ${cdp.id}
+      Wallet Address: ${alert.address}
+      Alert parameters:
+         - Min: ${alert.min}%
+         - Max: ${alert.max}%
+
+    To delete this alert follow this link: ${deleteLink}
+
+    CDP Alert is an Open Source application. Made with ❤ by Protofire.io.
+    `
+  var data = {
+    from: 'Protofire <leo@protofire.io>',
+    to: alert.email,
+    subject: 'Maximum CDP Alert triggered for CDP ' + cdp.id,
+    text
+  }
+  return sendEmail(data)
+}
+
+async function sendEmail (data) {
   if (process.env.NODE_ENV !== 'production') {
     console.log('Email data', data)
     return Promise.resolve('OK but email not sent in dev mode.')
@@ -50,13 +116,19 @@ function sendAlertRegistrationEmail ({
       if (error) {
         reject(error)
       } else {
-        body.text = text
+        body.text = data.text
         resolve(body)
       }
     })
   })
 }
 
+function createDeleteAlertLink (apiURL, alert) {
+  return `${apiURL}/alerts/${alert.id}/delete/${alert.secret}`
+}
+
 module.exports = {
-  sendAlertRegistrationEmail
+  sendAlertRegistrationEmail,
+  notifyAlertMin,
+  notifyAlertMax
 }
