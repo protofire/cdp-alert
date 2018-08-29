@@ -42,6 +42,7 @@ class App extends Component {
     minRatio: '200',
     maxRatio: '300',
     working: true,
+    loading: false,
     creationSuccess: null,
     showNotice: false,
     demoAccount: '0x0000000000000000000000000000000000000000',
@@ -109,7 +110,7 @@ class App extends Component {
   }
 
   createAlert = async () => {
-    const {email, minRatio, maxRatio, selectedWallet, demoAccount, metamaskAccount} = this.state
+    const {email, minRatio, maxRatio, selectedWallet, demoAccount, metamaskAccount, walletCdps} = this.state
 
     let res
     try {
@@ -120,7 +121,7 @@ class App extends Component {
         },
         body: JSON.stringify({
           'email': email,
-          'cdps': this.getWalletCdps().map(cdp => String(cdp.id)),
+          'cdps': walletCdps.map(cdp => String(cdp.id)),
           'address': selectedWallet === 'demo' ? demoAccount : metamaskAccount,
           'min': minRatio,
           'max': maxRatio
@@ -150,44 +151,55 @@ class App extends Component {
     this.setState({step})
   }
 
-  goWithSelectedWallet = async selectedWallet => {
-    await this.setState({selectedWallet})
+  goWithSelectedWallet = selectedWallet => {
+    this.setState({selectedWallet})
 
     switch (selectedWallet) {
-      case 'metamask':
-        await this.setState({walletCdps: this.getWalletCdps()})
-        break
       case 'ledger':
         // tbd
         break
       case 'trezor':
         // tbd
         break
-      default:
       case 'demo':
-        await this.setState({walletCdps: this.getWalletCdps()})
-        break
+      case 'metamask':
+      default:
+        this.getWalletCdps(selectedWallet)
+          .then(cdps => {
+            const walletCdps = cdps
+              .filter(cdp => cdp.collateralizationRatio > 0)
+              .sort((a, b) => a.cdpId - b.cdpId)
+            this.setState({walletCdps, loading: false})
+          })
     }
 
     this.changeStep(3)
   }
 
-  getWalletCdps = () => {
-    switch (this.state.selectedWallet) {
+  getWalletCdps = async selectedWallet => {
+    switch (selectedWallet) {
       case 'metamask':
-        // fetch('')
-        break;
+        await this.setState({ loading: true })
+        try {
+          const baseUrl = this.state.networkId === 1
+            ? process.env.REACT_APP_GET_CDPS_URL_MAINNET
+            : process.env.REACT_APP_GET_CDPS_URL_KOVAN
+          const url = `${baseUrl}/${this.state.metamaskAccount}`
+          return fetch(url).then(res => res.json())
+        } catch (e) {
+          return []
+        }
       default:
       case 'demo':
         return [
-          {id: 3024, borrowedDai: 7536.470, lockedEth: 48.953, liquidationPrice: 226.189},
-          {id: 3025, borrowedDai: 51000, lockedEth: 390.000, liquidationPrice: 390.000},
-          {id: 3042, borrowedDai: 30000, lockedEth: 195.012, liquidationPrice: 226.019},
-          {id: 3051, borrowedDai: 11000, lockedEth: 107.057, liquidationPrice: 150.960},
-          {id: 3058, borrowedDai: 80, lockedEth: 0.489, liquidationPrice: 240.019},
-          {id: 3074, borrowedDai: 95, lockedEth: 0.734, liquidationPrice: 189.999},
-          {id: 3081, borrowedDai: 10, lockedEth: 0.214, liquidationPrice: 68.598},
-          {id: 3083, borrowedDai: 1210, lockedEth: 10, liquidationPrice: 177.775}
+          {cdpId: 3024, borrowedDai: 7536.470, lockedEth: 48.953, liquidationPrice: 226.189, collateralizationRatio: 1.87},
+          {cdpId: 3025, borrowedDai: 51000, lockedEth: 390.000, liquidationPrice: 390.000, collateralizationRatio: 2.20},
+          {cdpId: 3042, borrowedDai: 30000, lockedEth: 195.012, liquidationPrice: 226.019, collateralizationRatio: 1.87},
+          {cdpId: 3051, borrowedDai: 11000, lockedEth: 107.057, liquidationPrice: 150.960, collateralizationRatio: 2.80},
+          {cdpId: 3058, borrowedDai: 80, lockedEth: 0.489, liquidationPrice: 240.019, collateralizationRatio: 1.76},
+          {cdpId: 3074, borrowedDai: 95, lockedEth: 0.734, liquidationPrice: 189.999, collateralizationRatio: 2.23},
+          {cdpId: 3081, borrowedDai: 10, lockedEth: 0.214, liquidationPrice: 68.598, collateralizationRatio: 6.16},
+          {cdpId: 3083, borrowedDai: 1210, lockedEth: 10, liquidationPrice: 177.775, collateralizationRatio: 2.38}
         ]
     }
   }
@@ -202,6 +214,7 @@ class App extends Component {
       walletCdps,
       ethPrice,
       showNotice,
+      loading,
       working,
       creationSuccess,
       metamaskAccount,
@@ -261,8 +274,13 @@ class App extends Component {
                       <strong>${ethPrice > -1 ? formatNumber(ethPrice, 3, 3) : LS}</strong>
                     </span>
                   </div>
-                  {!walletCdps && <span className="no-cdps-found">..No CDPs found..</span>}
-                  {walletCdps && (
+                  {loading && (
+                    <div>
+                      <p>Loading CDPs</p>
+                      <img src="/images/loading.svg" alt="Loading CDPs"/>
+                    </div>)}
+                  {!loading && !walletCdps && <span className="no-cdps-found">..No CDPs found..</span>}
+                  {!loading && walletCdps && (
                     <WalletCdpsTable>
                       <thead>
                       <tr>
@@ -275,12 +293,11 @@ class App extends Component {
                       </thead>
                       <tbody>
                       {walletCdps && walletCdps.map(cdp => {
-                        const collateral =
-                          Math.round(cdp.lockedEth * ethPrice / cdp.borrowedDai * 100)
+                        const collateral = Math.round(cdp.collateralizationRatio * 100)
 
                         return (
-                          <tr key={cdp.id}>
-                            <td>{cdp.id}</td>
+                          <tr key={cdp.cdpId}>
+                            <td>{cdp.cdpId}</td>
                             <td>{formatNumber(cdp.borrowedDai, 3, 3)}</td>
                             <td>{formatNumber(cdp.lockedEth, 3, 3)}</td>
                             <td>
