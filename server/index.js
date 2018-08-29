@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000
 const { disableOldAlerts } = require('./lib/disable-old-alerts')
 const { processAlerts } = require('./lib/process-alerts')
 const { disableClosedCDPAlerts } = require('./lib/disable-closed-cdp-alerts')
+const { processCdpsEvents } = require('./lib/process-cdps-events')
 
 setInterval(function () {
   disableOldAlerts(process.env.MAX_ALERT_AGE_DAYS)
@@ -19,6 +20,12 @@ setInterval(function () {
 setInterval(function () {
   processAlerts()
 }, 1000 * process.env.ALERT_PROCESSING_INTERVAL_SECONDS)
+
+setInterval(function () {
+  processCdpsEvents()
+}, 1000 * process.env.EVENTS_PROCESSING_INTERVAL_SECONDS)
+// @TODO: delete this invocation?
+processCdpsEvents()
 
 const app = new Koa()
 const router = new Router()

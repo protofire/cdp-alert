@@ -2,12 +2,16 @@ require('dotenv').config()
 const Web3 = require('web3')
 const Maker = require('@makerdao/dai')
 
-const { Cdp, Event } = require('./models')
+const { Cdp, Event } = require('../models/index')
+
+module.exports = {
+  processCdpsEvents
+}
 
 const httpWeb3 = new Web3(
   new Web3.providers.HttpProvider(process.env.INFURA_URL)
 )
-const contractAbi = require('./abi/saitub.json')
+const contractAbi = require('../abi/saitub.json')
 const saitubContract = new httpWeb3.eth.Contract(
   contractAbi,
   process.env.CONTRACT_ADDRESS
@@ -63,9 +67,10 @@ function processSaitubEvents (lastBlockFrom) {
       console.log('CDPs events processed successfully.')
     })
     .catch(e => console.log(e))
-    .finally(() => process.exit(1))
 }
 
-Event.findOne({ lastBlockFrom: { $exists: true, $ne: -1 } }, (error, doc) =>
-  processSaitubEvents(doc && doc.lastBlockFrom ? doc.lastBlockFrom : 0)
-)
+function processCdpsEvents () {
+  Event.findOne({ lastBlockFrom: { $exists: true, $ne: -1 } }, (error, doc) =>
+    processSaitubEvents(doc && doc.lastBlockFrom ? doc.lastBlockFrom : 0)
+  )
+}
