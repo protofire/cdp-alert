@@ -4,6 +4,7 @@ const cors = require('@koa/cors')
 const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
 const alerts = require('./alerts')
+const cdps = require('./cdps')
 const PORT = process.env.PORT || 3000
 
 const { disableOldAlerts } = require('./lib/disable-old-alerts')
@@ -32,6 +33,7 @@ router.get('/', ctx => {
   ctx.body = 'CDPAlert API'
 })
 router.use('/alerts', alerts.routes(), alerts.allowedMethods())
+router.use('/cdps', cdps.routes(), cdps.allowedMethods())
 app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(PORT)

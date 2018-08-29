@@ -1,19 +1,7 @@
-var dbUri = process.env.DB_URI
-if (!dbUri) {
-  throw new Error('DB_URI not configured. Add it to .env')
-}
 const uuid = require('uuid')
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require('./connection')
 
-mongoose.connect(
-  dbUri,
-  {
-    useNewUrlParser: true
-  }
-)
-
-var schema = new Schema({
+const schema = new mongoose.Schema({
   email: String,
   cdps: [String],
   address: String,
