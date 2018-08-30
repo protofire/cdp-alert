@@ -57,8 +57,8 @@ class App extends Component {
         metamaskAccount: web3Check.account,
         networkId: web3Check.networkId
       })
-      await this.makerAttachEvents()
-      this.maker.authenticate()
+      await this.maker.authenticate()
+      this.makerAttachEvents()
     } else {
       await this.setState({
         web3: null,
