@@ -6,7 +6,12 @@
     "NODE_ENV": "production",
     "MAILGUN_APIKEY": "@mailgun_apikey",
     "DB_URI": "@db_uri",
-    "MAX_ALERT_AGE_DAYS": "60"
+    "MAX_ALERT_AGE_DAYS": "60",
+    "EVENTS_PROCESSING_INTERVAL_SECONDS": "600",
+    "NETWORK": "kovan",
+    "CONTRACT_ADDRESS": "0xa71937147b55Deb8a530C7229C442Fd3F31b7db2",
+    "PRIVATE_KEY": "@private_key",
+    "INFURA_URL": "@infura_url"
   },
   "type": "npm"
 }
