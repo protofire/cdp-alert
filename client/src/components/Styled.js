@@ -331,11 +331,16 @@ export const WalletCdpsTable = styled.table.attrs({
     border: 0;
     
     &:hover {
-      cursor: default;
+      cursor: pointer;
     }
 
     &:disabled {
       cursor: not-allowed;
+    }
+    
+    span {
+      font-size: 16px;
+      vertical-align: text-top;
     }
   }
 `

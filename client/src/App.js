@@ -221,6 +221,7 @@ class App extends Component {
       minRatio,
       maxRatio,
       walletCdps,
+      selectedWallet,
       ethPrice,
       showNotice,
       loading,
@@ -332,8 +333,13 @@ class App extends Component {
                       <tr>
                         <td colSpan="5">
                           <div>
-                            <button>&lt; Previous</button>
-                            <button>Next &gt;</button>
+                            <button disabled>&lt; Previous</button>
+                            {selectedWallet === 'metamask' && (
+                              <button onClick={() => this.tryAgainGettingCdps()}>
+                                <span>⟳</span> Refresh CDPs
+                              </button>
+                            )}
+                            <button disabled>Next &gt;</button>
                           </div>
                         </td>
                       </tr>
