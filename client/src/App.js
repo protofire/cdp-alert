@@ -27,27 +27,24 @@ class App extends Component {
     this.LS = '...'
 
     this.state = {
-      ...this.emptyInitialState()
+      step: 1,
+      ethPrice: -1,
+      email: '',
+      minRatio: '200',
+      maxRatio: '300',
+      working: true,
+      loading: false,
+      failedToGetCdps: false,
+      creationSuccess: null,
+      showNotice: false,
+      demoAccount: '0x0000000000000000000000000000000000000000',
+      metamaskAccount: null
     }
   }
 
   componentWillUnmount() {
     clearInterval(this.updateEthPriceInterval)
   }
-
-  emptyInitialState = () => ({
-    step: 1,
-    ethPrice: -1,
-    email: '',
-    minRatio: '200',
-    maxRatio: '300',
-    working: true,
-    loading: false,
-    creationSuccess: null,
-    showNotice: false,
-    demoAccount: '0x0000000000000000000000000000000000000000',
-    metamaskAccount: null
-  })
 
   initMetamask = async () => {
     const web3Check = await web3Checker()
@@ -114,7 +111,7 @@ class App extends Component {
 
     let res
     try {
-      res = await fetch('https://cdp-alert-api.now.sh/alerts', {
+      res = await fetch(`${this.apiBaseUrl}/alerts`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json'
@@ -161,8 +158,17 @@ class App extends Component {
       case 'trezor':
         // tbd
         break
-      case 'demo':
       case 'metamask':
+        // @TODO: remove when env vars are right set
+        if (process.env.NODE_ENV !== 'production') {
+          //this.apiBaseUrl = 'http://localhost:3000'
+          this.apiBaseUrl = 'https://cdp-alert-api.now.sh'
+        } else {
+          this.apiBaseUrl = this.state.networkId === 1
+            ? process.env.REACT_APP_GET_CDPS_URL_MAINNET
+            : process.env.REACT_APP_GET_CDPS_URL_KOVAN
+        }
+      case 'demo':
       default:
         this.getWalletCdps(selectedWallet)
           .then(cdps => {
@@ -173,7 +179,14 @@ class App extends Component {
           })
     }
 
-    this.changeStep(3)
+    if (this.state.step !== 3) {
+      this.changeStep(3)
+    }
+  }
+
+  tryAgainGettingCdps = () => {
+    this.setState({ loading: true, failedToGetCdps: false },
+      () => this.goWithSelectedWallet(this.state.selectedWallet))
   }
 
   getWalletCdps = async selectedWallet => {
@@ -181,12 +194,11 @@ class App extends Component {
       case 'metamask':
         await this.setState({ loading: true })
         try {
-          const baseUrl = this.state.networkId === 1
-            ? process.env.REACT_APP_GET_CDPS_URL_MAINNET
-            : process.env.REACT_APP_GET_CDPS_URL_KOVAN
-          const url = `${baseUrl}/${this.state.metamaskAccount}`
-          return fetch(url).then(res => res.json())
+          const url = `${this.apiBaseUrl}/cdps/${this.state.metamaskAccount}`
+          const res = await fetch(url)
+          return res.json()
         } catch (e) {
+          await this.setState({ loading: false, failedToGetCdps: true })
           return []
         }
       default:
@@ -216,6 +228,7 @@ class App extends Component {
       showNotice,
       loading,
       working,
+      failedToGetCdps,
       creationSuccess,
       metamaskAccount,
       networkId
@@ -276,11 +289,17 @@ class App extends Component {
                   </div>
                   {loading && (
                     <div>
-                      <p>Loading CDPs</p>
+                      <p>Loading CDPs...</p>
                       <img src="/images/loading.svg" alt="Loading CDPs"/>
                     </div>)}
+                  {failedToGetCdps && (
+                    <div>
+                      <p>..Could not get your CPDs..</p>
+                      <Button onClick={() => this.tryAgainGettingCdps()}>Try again</Button>
+                    </div>
+                  )}
                   {!loading && !walletCdps && <span className="no-cdps-found">..No CDPs found..</span>}
-                  {!loading && walletCdps && (
+                  {!loading && !failedToGetCdps && walletCdps && (
                     <WalletCdpsTable>
                       <thead>
                       <tr>
