@@ -1,8 +1,8 @@
 {
-  "name": "cdp-alert-api",
-  "alias": "cdp-alert-api.now.sh",
+  "name": "cdp-alert-api-kovan",
+  "alias": "cdp-alert-api-kovan.now.sh",
   "env": {
-    "API_URL": "https://cdp-alert-api.now.sh",
+    "API_URL": "https://cdp-alert-api-kovan.now.sh",
     "NODE_ENV": "production",
     "MAILGUN_APIKEY": "@mailgun_apikey",
     "MAX_ALERT_AGE_DAYS": "60",
@@ -10,12 +10,12 @@
     "ALERT_PROCESSING_INTERVAL_SECONDS": "600",
     "ALERT_CLEANUP_INTERVAL_SECONDS": "86400",
 
-    "DB_URI": "@db_uri",
-    "NETWORK": "mainnet",
-    "CONTRACT_ADDRESS": "0x448a5065aeBB8E423F0896E6c5D525C040f59af3",
+    "DB_URI": "@db_uri_kovan",
+    "NETWORK": "kovan",
+    "CONTRACT_ADDRESS": "0xa71937147b55Deb8a530C7229C442Fd3F31b7db2",
 
     "PRIVATE_KEY": "@private_key",
-    "INFURA_URL": "@infura_url"
+    "INFURA_URL": "@infura_url_kovan"
   },
   "type": "npm"
 }
