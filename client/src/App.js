@@ -159,14 +159,12 @@ class App extends Component {
         // tbd
         break
       case 'metamask':
-        // @TODO: remove when env vars are right set
         if (process.env.NODE_ENV !== 'production') {
-          //this.apiBaseUrl = 'http://localhost:3000'
-          this.apiBaseUrl = 'https://cdp-alert-api.now.sh'
+          this.apiBaseUrl = 'http://localhost:3000'
         } else {
           this.apiBaseUrl = this.state.networkId === 1
-            ? process.env.REACT_APP_GET_CDPS_URL_MAINNET
-            : process.env.REACT_APP_GET_CDPS_URL_KOVAN
+            ? process.env.REACT_APP_API_URL_MAINNET
+            : process.env.REACT_APP_API_URL_KOVAN
         }
       case 'demo':
       default:
@@ -195,8 +193,7 @@ class App extends Component {
         await this.setState({ loading: true })
         try {
           const url = `${this.apiBaseUrl}/cdps/${this.state.metamaskAccount}`
-          const res = await fetch(url)
-          return res.json()
+          return await (await fetch(url)).json()
         } catch (e) {
           await this.setState({ loading: false, failedToGetCdps: true })
           return []
