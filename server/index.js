@@ -12,6 +12,8 @@ const { processAlerts } = require('./lib/process-alerts')
 const { disableClosedCDPAlerts } = require('./lib/disable-closed-cdp-alerts')
 const { processCdpsEvents } = require('./lib/process-cdps-events')
 
+console.log(process.env)
+
 setInterval(function () {
   disableOldAlerts(process.env.MAX_ALERT_AGE_DAYS)
   disableClosedCDPAlerts()
