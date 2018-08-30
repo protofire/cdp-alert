@@ -49,6 +49,7 @@ function processSaitubEvents (lastBlockFrom) {
     )
     .then(async events => {
       if (!events.length) {
+        console.log(`No new events found`)
         return
       }
 
