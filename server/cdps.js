@@ -85,10 +85,6 @@ router.get('/:address', getCdpsValidator, async (ctx, next) => {
       })
     )
 
-    if (!cdps.length) {
-      ctx.throw(404, 'No CDPs found')
-    }
-
     ctx.body = cdps
   } catch (error) {
     ctx.throw(error)

@@ -38,7 +38,8 @@ class App extends Component {
       creationSuccess: null,
       showNotice: false,
       demoAccount: '0x0000000000000000000000000000000000000000',
-      metamaskAccount: null
+      metamaskAccount: null,
+      startMonitoringDisabled: false
     }
   }
 
@@ -142,6 +143,7 @@ class App extends Component {
       window.clearInterval(this.updateEthPriceInterval)
       this.updateEthPriceInterval = null
       if (step === 2) {
+        await this.setState({ startMonitoringDisabled: true })
         await this.initMetamask()
       }
     }
@@ -229,7 +231,8 @@ class App extends Component {
       failedToGetCdps,
       creationSuccess,
       metamaskAccount,
-      networkId
+      networkId,
+      startMonitoringDisabled
     } = this.state
 
     return (
@@ -245,7 +248,8 @@ class App extends Component {
                 <hr/>
                 <hr/>
                 <p>Don’t get under or over collateralized</p>
-                <button onClick={() => this.changeStep(2)}>Start Monitoring</button>
+                <button disabled={startMonitoringDisabled}
+                        onClick={() => this.changeStep(2)}>Start Monitoring</button>
               </Section>
             )}
             {step === 2 && (

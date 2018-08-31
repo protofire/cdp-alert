@@ -22,42 +22,53 @@ const maker = Maker.create(process.env.NETWORK, {
   log: false
 })
 
-async function processEventCdp (event) {
+async function processEventCdp (event, lastBlockFrom, failedCdps) {
+  const cdpId = Number(event.returnValues.cup)
+
+  if (event.blockNumber < lastBlockFrom && !failedCdps.includes(cdpId)) {
+    return Promise.resolve()
+  }
+
   try {
-    const cdpId = Number(event.returnValues.cup)
-    const ownerAddress = event.returnValues.lad
-
     await maker.getCdp(cdpId)
-
-    await Cdp.create({ cdpId, ownerAddress })
+    await Cdp.updateOne(
+      { cdpId },
+      { ownerAddress: event.returnValues.lad },
+      { upsert: true }
+    )
   } catch (e) {
-    // nothing to do
+    if (e.message.includes("That CDP doesn't exist")) {
+      await Cdp.deleteOne({ cdpId })
+    } else {
+      await Cdp.updateOne({ cdpId }, { ownerAddress: '' }, { upsert: true })
+    }
   }
 }
 
-function processSaitubEvents (lastBlockFrom) {
+function processSaitubEvents ({ lastBlockFrom, failedCdps }) {
   saitubContract
     .getPastEvents(
       'LogNewCup',
       {
-        fromBlock: lastBlockFrom,
+        fromBlock: failedCdps.length ? 0 : lastBlockFrom,
         toBlock: 'latest'
       },
       error =>
-        error &&
-        console.log('saitubContract.getPastEvents error: ', error.message)
+        error && console.log('saitubContract.getPastEvents error: ', error)
     )
     .then(async events => {
-      if (!events.length) {
-        console.log(`No new events found`)
-        return
+      if (!events.length && !failedCdps.length) {
+        return console.log(`No events to process`)
       }
 
-      console.log(`Read ${events.length} events`)
+      console.log(`${events.length} new events for processing.`)
+      console.log(`${failedCdps.length} old events for re-trying.`)
 
       await maker.authenticate()
 
-      await Promise.all(events.map(event => processEventCdp(event)))
+      await Promise.all(
+        events.map(event => processEventCdp(event, lastBlockFrom, failedCdps))
+      )
 
       await Event.findOneAndUpdate(
         { lastBlockFrom: { $ne: -1 } },
@@ -65,13 +76,20 @@ function processSaitubEvents (lastBlockFrom) {
         { upsert: true }
       )
 
-      console.log('CDPs events processed successfully.')
+      console.log(`${events.length + failedCdps.length} CDPs events processed.`)
     })
     .catch(e => console.log(e))
 }
 
 function processCdpsEvents () {
-  Event.findOne({ lastBlockFrom: { $exists: true, $ne: -1 } }, (error, doc) =>
-    processSaitubEvents(doc && doc.lastBlockFrom ? doc.lastBlockFrom : 0)
-  )
+  Promise.all([
+    Event.findOne({ lastBlockFrom: { $exists: true, $ne: -1 } }).exec(),
+    Cdp.find({ cdpId: { $ne: null }, ownerAddress: '' }, 'cdpId').exec()
+  ])
+    .then(res => ({
+      lastBlockFrom: res[0] && res[0].lastBlockFrom ? res[0].lastBlockFrom : 0,
+      failedCdps: res[1].map(cdp => cdp.cdpId)
+    }))
+    .then(res => processSaitubEvents(res))
+    .catch(e => console.log('processCdpsEvents error: ', e))
 }
