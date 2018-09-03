@@ -15,7 +15,7 @@ const getCdpsValidator = validate({
 
 router.get('/:address', getCdpsValidator, async (ctx, next) => {
   try {
-    const ownerAddress = ctx.params.address
+    const ownerAddress = ctx.params.address.toLowerCase()
 
     const cdpsIds = await Cdp.find({ ownerAddress }, 'cdpId')
     if (!cdpsIds) {

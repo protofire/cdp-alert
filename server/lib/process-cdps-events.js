@@ -32,7 +32,7 @@ async function processEventCdp (event, lastBlockFrom, failedCdps) {
     await maker.getCdp(cdpId)
     await Cdp.updateOne(
       { cdpId },
-      { ownerAddress: event.returnValues.lad },
+      { ownerAddress: event.returnValues.lad.toLowerCase() },
       { upsert: true }
     )
   } catch (e) {
