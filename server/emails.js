@@ -83,7 +83,7 @@ async function notifyAlertMax (alert, cdp) {
   }).
 
     CDP: ${cdp.id} is above the maximum alert threshold: ${ratio}% >= ${
-  alert.min
+  alert.max
 }%.
 
     Details:
