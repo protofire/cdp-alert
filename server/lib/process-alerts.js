@@ -1,5 +1,6 @@
 const { Alert } = require('../models')
 const { notifyAlertMin, notifyAlertMax } = require('../emails')
+const { getCDP } = require('./cdps')
 
 module.exports = {
   processAlerts
@@ -23,22 +24,12 @@ async function processAlerts (days = 60) {
       }
     }
   }
-  console.log(alerts.length, 'processed')
+  console.log(alerts.length, 'alerts processed')
 }
 
 // @TODO: get real CDPs
 async function getCDPs (ids) {
-  return Promise.all(
-    ids.map(id => {
-      return Promise.resolve({
-        id,
-        getDebtValue: 108,
-        collateralizationRatio: Math.random() * 10.5299758604067604,
-        getLiquidationPrice: 279.26666103503453,
-        getCollateralValue: 0.5800907254721566
-      })
-    })
-  )
+  return Promise.all(ids.map(getCDP))
 }
 
 // @TODO: check if collateralizationRatio is updated with ETH price
