@@ -36,9 +36,6 @@ build/Release
 node_modules/
 jspm_packages/
 
-# TypeScript v1 declaration files
-typings/
-
 # Optional npm cache directory
 .npm
 
@@ -48,21 +45,21 @@ typings/
 # Optional REPL history
 .node_repl_history
 
+# Webpack output
+build/
+
 # Output of 'npm pack'
 *.tgz
 
 # Yarn Integrity file
 .yarn-integrity
 
+# IDEs
+.idea/
+.vscode/
+
 # dotenv environment variables file
 .env
 
 # next.js build output
 .next
-
-# IDEs
-.idea
-
-# Client
-client/.idea
-client/node_modules
