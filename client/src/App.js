@@ -119,7 +119,7 @@ class App extends Component {
         },
         body: JSON.stringify({
           'email': email,
-          'cdps': walletCdps.map(cdp => String(cdp.id)),
+          'cdps': walletCdps.map(({cdpId}) => String(cdpId)),
           'address': selectedWallet === 'demo' ? demoAccount : metamaskAccount,
           'min': minRatio,
           'max': maxRatio
