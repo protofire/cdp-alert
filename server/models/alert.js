@@ -11,6 +11,10 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now()
   },
+  lastNotifiedAt: {
+    type: Date,
+    default: new Date('2018-01-01')
+  },
   disabled: {
     type: Boolean,
     default: false
