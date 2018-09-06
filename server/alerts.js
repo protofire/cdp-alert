@@ -45,9 +45,14 @@ router.get('/:id/delete/:secret', deleteAlertValidator, async (ctx, next) => {
 
 router.post('/', alertValidator, async (ctx, next) => {
   try {
-    const alert = new Alert(ctx.request.body)
-    await sendAlertRegistrationEmail(await alert.save())
-    ctx.body = alert
+    await sendAlertRegistrationEmail(ctx.request.body)
+    const promises = ctx.request.body.cdps.map(cdpId => {
+      const alert = new Alert(ctx.request.body)
+      alert.cdps = [cdpId]
+      return alert.save()
+    })
+    await Promise.all(promises)
+    ctx.body = ctx.request.body
   } catch (error) {
     ctx.throw(400, error.message || 'Bad request')
   }
