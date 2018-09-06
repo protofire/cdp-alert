@@ -153,30 +153,28 @@ class App extends Component {
   goWithSelectedWallet = selectedWallet => {
     this.setState({selectedWallet})
 
-    switch (selectedWallet) {
-      case 'ledger':
-        // tbd
-        break
-      case 'trezor':
-        // tbd
-        break
-      case 'metamask':
-        if (process.env.NODE_ENV !== 'production') {
-          this.apiBaseUrl = 'http://localhost:3000'
-        } else {
-          this.apiBaseUrl = this.state.networkId === 1
-            ? process.env.REACT_APP_API_URL_MAINNET
-            : process.env.REACT_APP_API_URL_KOVAN
-        }
-      case 'demo':
-      default:
-        this.getWalletCdps(selectedWallet)
-          .then(cdps => {
-            const walletCdps = cdps
-              .filter(cdp => cdp.collateralizationRatio > 0)
-              .sort((a, b) => a.cdpId - b.cdpId)
-            this.setState({walletCdps, loading: false})
-          })
+    if (selectedWallet === 'metamask') {
+      if (process.env.NODE_ENV !== 'production') {
+        this.apiBaseUrl = 'http://localhost:3000'
+      } else {
+        this.apiBaseUrl = this.state.networkId === 1
+          ? process.env.REACT_APP_API_URL_MAINNET
+          : process.env.REACT_APP_API_URL_KOVAN
+      }
+    } else if (selectedWallet === 'ledger') {
+      // TBD
+    } else if (selectedWallet === 'trezor') {
+      // TBD
+    }
+
+    if (selectedWallet === 'demo' || selectedWallet === 'metamask') {
+      this.getWalletCdps(selectedWallet).then(cdps => {
+        const walletCdps = cdps
+          .filter(cdp => cdp.collateralizationRatio > 0)
+          .sort((a, b) => a.cdpId - b.cdpId)
+
+        this.setState({walletCdps, loading: false})
+      })
     }
 
     if (this.state.step !== 3) {
