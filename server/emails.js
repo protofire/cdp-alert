@@ -31,8 +31,6 @@ function sendAlertRegistrationEmail ({
          - Min: ${min}%
          - Max: ${max}%
 
-    To delete this alert follow this link: ${deleteLink}
-
     CDP Alert is an Open Source application. Made with ❤ by Protofire.io.
     `
   var data = {
