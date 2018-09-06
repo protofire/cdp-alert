@@ -20,6 +20,14 @@ import {
   Percent
 } from './components/Styled'
 
+const MAINNET_NETWORK = 1
+const KOVAN_NETWORK = 42
+
+const SUPPORTED_NETWORKS = [
+  MAINNET_NETWORK,
+  KOVAN_NETWORK
+]
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -49,16 +57,21 @@ class App extends Component {
 
   initMetamask = async () => {
     const web3Check = await web3Checker()
+
     if (web3Check.res === Web3States.OK
-      && [1, 42].includes(web3Check.networkId)
+      && SUPPORTED_NETWORKS.includes(web3Check.networkId)
       && web3Check.account) {
-      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan', { log: false})
+      const network = web3Check.networkId === MAINNET_NETWORK ? 'mainnet' : 'kovan'
+      this.maker = Maker.create(network, {log: false})
+
       await this.setState({
         web3: web3Check.web3,
         metamaskAccount: web3Check.account,
         networkId: web3Check.networkId
       })
+
       await this.maker.authenticate()
+
       this.makerAttachEvents()
     } else {
       await this.setState({
@@ -157,7 +170,7 @@ class App extends Component {
       if (process.env.NODE_ENV !== 'production') {
         this.apiBaseUrl = 'http://localhost:3000'
       } else {
-        this.apiBaseUrl = this.state.networkId === 1
+        this.apiBaseUrl = this.state.networkId === MAINNET_NETWORK
           ? process.env.REACT_APP_API_URL_MAINNET
           : process.env.REACT_APP_API_URL_KOVAN
       }
@@ -266,7 +279,7 @@ class App extends Component {
                             onClick={() => this.goWithSelectedWallet('metamask')}>Metamask
                       {!metamaskAccount && <span className="allowedNets">(MainNet or Kovan)</span>}
                       {metamaskAccount && <span
-                        className="connected">Connected to {networkId === 1 ? 'MainNet' : 'Kovan'}</span>}
+                        className="connected">Connected to {networkId === MAINNET_NETWORK ? 'MainNet' : 'Kovan'}</span>}
                     </button>
                     <button className="ledger" disabled={true}/>
                     <button className="trezor" disabled={true}/>
