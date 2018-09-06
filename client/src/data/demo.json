@@ -1,0 +1,58 @@
+[
+  {
+    "cdpId": 3024,
+    "borrowedDai": 7536.47,
+    "lockedEth": 48.953,
+    "liquidationPrice": 226.189,
+    "collateralizationRatio": 1.87
+  },
+  {
+    "cdpId": 3025,
+    "borrowedDai": 51000,
+    "lockedEth": 390,
+    "liquidationPrice": 390,
+    "collateralizationRatio": 2.2
+  },
+  {
+    "cdpId": 3042,
+    "borrowedDai": 30000,
+    "lockedEth": 195.012,
+    "liquidationPrice": 226.019,
+    "collateralizationRatio": 1.87
+  },
+  {
+    "cdpId": 3051,
+    "borrowedDai": 11000,
+    "lockedEth": 107.057,
+    "liquidationPrice": 150.96,
+    "collateralizationRatio": 2.8
+  },
+  {
+    "cdpId": 3058,
+    "borrowedDai": 80,
+    "lockedEth": 0.489,
+    "liquidationPrice": 240.019,
+    "collateralizationRatio": 1.76
+  },
+  {
+    "cdpId": 3074,
+    "borrowedDai": 95,
+    "lockedEth": 0.734,
+    "liquidationPrice": 189.999,
+    "collateralizationRatio": 2.23
+  },
+  {
+    "cdpId": 3081,
+    "borrowedDai": 10,
+    "lockedEth": 0.214,
+    "liquidationPrice": 68.598,
+    "collateralizationRatio": 6.16
+  },
+  {
+    "cdpId": 3083,
+    "borrowedDai": 1210,
+    "lockedEth": 10,
+    "liquidationPrice": 177.775,
+    "collateralizationRatio": 2.38
+  }
+]

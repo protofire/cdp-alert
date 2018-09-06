@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Maker from '@makerdao/dai'
 import { ThemeProvider } from 'styled-components'
 
+import demoData from './data/demo'
 import { web3Checker, Web3States } from './utils/web3'
 import theme from './utils/theme'
 import formatNumber from './utils/format-number'
@@ -28,6 +29,8 @@ const SUPPORTED_NETWORKS = [
   KOVAN_NETWORK
 ]
 
+const DEMO_ACCOUNT = '0x0000000000000000000000000000000000000000'
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -45,7 +48,6 @@ class App extends Component {
       failedToGetCdps: false,
       creationSuccess: null,
       showNotice: false,
-      demoAccount: '0x0000000000000000000000000000000000000000',
       metamaskAccount: null,
       startMonitoringDisabled: false
     }
@@ -121,8 +123,7 @@ class App extends Component {
   }
 
   createAlert = async () => {
-    const {email, minRatio, maxRatio, selectedWallet, demoAccount, metamaskAccount, walletCdps} = this.state
-
+    const {email, minRatio, maxRatio, selectedWallet, metamaskAccount, walletCdps} = this.state
     let res
     try {
       res = await fetch(`${this.apiBaseUrl}/alerts`, {
@@ -133,7 +134,7 @@ class App extends Component {
         body: JSON.stringify({
           'email': email,
           'cdps': walletCdps.map(({cdpId}) => String(cdpId)),
-          'address': selectedWallet === 'demo' ? demoAccount : metamaskAccount,
+          'address': selectedWallet === 'demo' ? DEMO_ACCOUNT : metamaskAccount,
           'min': minRatio,
           'max': maxRatio
         })
@@ -204,6 +205,7 @@ class App extends Component {
     switch (selectedWallet) {
       case 'metamask':
         await this.setState({ loading: true })
+
         try {
           const url = `${this.apiBaseUrl}/cdps/${this.state.metamaskAccount}`
           return await (await fetch(url)).json()
@@ -211,18 +213,10 @@ class App extends Component {
           await this.setState({ loading: false, failedToGetCdps: true })
           return []
         }
+
       default:
       case 'demo':
-        return [
-          {cdpId: 3024, borrowedDai: 7536.470, lockedEth: 48.953, liquidationPrice: 226.189, collateralizationRatio: 1.87},
-          {cdpId: 3025, borrowedDai: 51000, lockedEth: 390.000, liquidationPrice: 390.000, collateralizationRatio: 2.20},
-          {cdpId: 3042, borrowedDai: 30000, lockedEth: 195.012, liquidationPrice: 226.019, collateralizationRatio: 1.87},
-          {cdpId: 3051, borrowedDai: 11000, lockedEth: 107.057, liquidationPrice: 150.960, collateralizationRatio: 2.80},
-          {cdpId: 3058, borrowedDai: 80, lockedEth: 0.489, liquidationPrice: 240.019, collateralizationRatio: 1.76},
-          {cdpId: 3074, borrowedDai: 95, lockedEth: 0.734, liquidationPrice: 189.999, collateralizationRatio: 2.23},
-          {cdpId: 3081, borrowedDai: 10, lockedEth: 0.214, liquidationPrice: 68.598, collateralizationRatio: 6.16},
-          {cdpId: 3083, borrowedDai: 1210, lockedEth: 10, liquidationPrice: 177.775, collateralizationRatio: 2.38}
-        ]
+        return demoData
     }
   }
 
