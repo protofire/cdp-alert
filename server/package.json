@@ -1,17 +1,22 @@
 {
   "name": "cdp-alert-api",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "author": "leo@protofire.io",
+  "license": "MIT",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/protofire/cdp-alert.git"
+  },
+  "engines": {
+    "node": "8.11.4"
+  },
   "scripts": {
     "start": "node index.js",
     "postman": "newman run ./tests/CDPAlert.postman_collection.json",
     "test": "NODE_ENV=testing start-server-and-test start http://localhost:3000 postman",
     "precommit": "lint-staged"
   },
-  "keywords": [],
-  "author": "leo@protofire.io",
-  "license": "MIT",
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "@makerdao/dai": "^0.7.0",
