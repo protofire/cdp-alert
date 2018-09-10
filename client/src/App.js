@@ -98,7 +98,7 @@ class App extends Component {
 
   openInsuranceModal = () => {
     if (window.ga) {
-      window.ga('send', 'event', 'open-insurance-modal')
+      window.ga('send', 'event', 'insurance-modal', 'open')
     }
 
     this.setState({ showInsuranceModal: true })
