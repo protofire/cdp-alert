@@ -18,64 +18,6 @@ injectGlobal`
   }
 `
 
-export const Header = styled.header`
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  h3 {
-    position: relative;
-    width: 1000px;
-    text-align: left;
-    margin: auto 0;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 1.33;
-    color: ${({theme}) => theme.color.white};
-  }  
-  
-  &.black-bg {
-    background-color: ${({theme}) => theme.color.darkText};
-  }
-`
-
-export const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  background: url('/images/background.png');
-  background-size: cover;
-
-  width: 100%;
-  min-height: 100vh;
-
-  &.white-bg {
-    background: ${({theme}) => theme.color.white};
-  }
-
-  hr {
-    width: 200px;
-    height: 0;
-    margin: 1px auto 0;
-    border: solid 1px ${({theme}) => theme.color.main};
-  }
-
-  button {
-    cursor: pointer;
-    
-    &:focus {
-      outline:0;
-    }
-  }
-`
-
 export const Section = styled.section`
   display: flex;
   flex-direction: column;
@@ -88,7 +30,7 @@ export const Section = styled.section`
 
   &.home {
     * {
-      color: ${({theme}) => theme.color.white};
+      color: ${({ theme }) => theme.color.white};
     }
 
     h2 {
@@ -114,7 +56,7 @@ export const Section = styled.section`
     button {
       width: 207px;
       height: 44px;
-      border: solid 1px ${({theme}) => theme.color.white};
+      border: solid 1px ${({ theme }) => theme.color.white};
       background-color: transparent;
       font-size: 18px;
       font-weight: bold;
@@ -134,11 +76,11 @@ export const Section = styled.section`
       height: 520px;
       padding: 23px 0;
 
-      background-color: ${({theme}) => theme.color.white};
+      background-color: ${({ theme }) => theme.color.white};
       box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.75);
 
       h2 {
-        color: ${({theme}) => theme.color.darkText};
+        color: ${({ theme }) => theme.color.darkText};
         font-size: 24px;
         font-weight: bold;
         line-height: 1.33;
@@ -157,17 +99,17 @@ export const Section = styled.section`
         button {
           width: 305px;
           height: 67px;
-          border: solid 1px ${({theme}) => theme.color.darkText};
+          border: solid 1px ${({ theme }) => theme.color.darkText};
           background-color: transparent;
-          color: ${({theme}) => theme.color.darkText};
+          color: ${({ theme }) => theme.color.darkText};
           font-weight: bold;
           position: relative;
           outline: 0;
   
           &:hover:enabled {
-            border-color: ${({theme}) => theme.color.main};
-            background-color: ${({theme}) => theme.color.main};
-            color: ${({theme}) => theme.color.white};
+            border-color: ${({ theme }) => theme.color.main};
+            background-color: ${({ theme }) => theme.color.main};
+            color: ${({ theme }) => theme.color.white};
           }
           
           &:disabled {
@@ -202,7 +144,7 @@ export const Section = styled.section`
             font-size: 13px;
             font-weight: normal;
             line-height: 1.38;
-            color: ${({theme}) => theme.color.main};
+            color: ${({ theme }) => theme.color.main};
             position: absolute;
             right: 0;
             bottom: -20px;
@@ -229,7 +171,7 @@ export const Section = styled.section`
       font-size: 36px;
       font-weight: bold;
       line-height: 1.33;
-      color: ${({theme}) => theme.color.darkText};
+      color: ${({ theme }) => theme.color.darkText};
     }
     
     > div:first-of-type {
@@ -242,7 +184,7 @@ export const Section = styled.section`
         font-size: 22px;
         font-weight: normal;
         line-height: 1.32;
-        color: ${({theme}) => theme.color.darkText};
+        color: ${({ theme }) => theme.color.darkText};
         
         strong.price {
           font-weight: bold;
@@ -258,14 +200,6 @@ export const Section = styled.section`
   }
 `
 
-export const EthIcon = styled.img.attrs({
-  src: '/images/ethereum.png',
-  alt: 'ETH'
-})`
-  height: 34px;
-  width: 21px;
-`
-
 export const WalletCdpsTable = styled.table.attrs({
   cellPadding: 0,
   cellSpacing: 0
@@ -276,13 +210,13 @@ export const WalletCdpsTable = styled.table.attrs({
   text-align: center;
   
   thead th {
-    color: ${({theme}) => theme.color.darkText};
+    color: ${({ theme }) => theme.color.darkText};
     font-weight: bold;
     line-height: 1.31;
   }
 
   tbody td {
-    border-top: 1px solid ${({theme}) => theme.color.lightGray};
+    border-top: 1px solid ${({ theme }) => theme.color.lightGray};
   }
 
   tbody,
@@ -306,11 +240,11 @@ export const WalletCdpsTable = styled.table.attrs({
 
   tbody {
     td.green {
-      color: ${({theme}) => theme.color.main};
+      color: ${({ theme }) => theme.color.main};
     }
     
     td.red {
-      color: ${({theme}) => theme.color.red};
+      color: ${({ theme }) => theme.color.red};
     }
   }
   
@@ -326,7 +260,7 @@ export const WalletCdpsTable = styled.table.attrs({
     font-size: 12px;
     font-weight: normal;
     line-height: 0.83;
-    color: ${({theme}) => theme.color.darkText};
+    color: ${({ theme }) => theme.color.darkText};
     background-color: transparent;
     border: 0;
     
@@ -358,14 +292,14 @@ export const NewAlertForm = styled.form`
     line-height: 1.38;
     text-align: left;
     margin: 0;
-    color: ${({theme}) => theme.color.darkText};
+    color: ${({ theme }) => theme.color.darkText};
     
     input:first-of-type {
-      color: ${({theme}) => theme.color.red};
+      color: ${({ theme }) => theme.color.red};
     }
     
     input:last-of-type {
-      color: ${({theme}) => theme.color.main};
+      color: ${({ theme }) => theme.color.main};
     }
   }
   
@@ -378,11 +312,11 @@ export const NewAlertForm = styled.form`
 
 const Input = styled.input`
   text-align: center;
-  border: 2px solid ${({theme}) => theme.color.softGray};
+  border: 2px solid ${({ theme }) => theme.color.softGray};
   background-color: rgba(0, 0, 0, 0.03);
 
   &::placeholder {
-    color: ${({theme}) => theme.color.softGray};
+    color: ${({ theme }) => theme.color.softGray};
   }
 
   &::-webkit-inner-spin-button,
@@ -403,13 +337,13 @@ export const NewAlertNumberInput = styled(Input).attrs({
   padding: 0 0 0 10px;
   margin: 0;
   border: 0;
-  border-bottom: solid 1px ${({theme}) => theme.color.lightGray};
+  border-bottom: solid 1px ${({ theme }) => theme.color.lightGray};
   background-color: transparent;
   -moz-appearance: textfield;
 
   &:focus {
     outline: none;
-    border-bottom-color: ${({theme}) => theme.color.darkText};
+    border-bottom-color: ${({ theme }) => theme.color.darkText};
   }
 `
 
@@ -420,12 +354,12 @@ export const NewAlertEmailInput = styled(NewAlertNumberInput).attrs({
   min-width: 200px;
   font-size: 14px;
   font-weight: 400;
-  color: ${({theme}) => theme.color.darkText};
+  color: ${({ theme }) => theme.color.darkText};
   padding: 0 5px;
   text-align: left;
   
   &::placeholder {
-    color: ${({theme}) => theme.color.placeholder};
+    color: ${({ theme }) => theme.color.placeholder};
   }
 `
 
@@ -440,9 +374,9 @@ export const Button = styled.button.attrs({
 })`
   width: 82px;
   height: 26px;
-  color: ${({theme}) => theme.color.darkText};
+  color: ${({ theme }) => theme.color.darkText};
   background-color: transparent;
-  border: solid 1px ${({theme}) => theme.color.darkText};
+  border: solid 1px ${({ theme }) => theme.color.darkText};
   text-transform: capitalize;
 
   &:hover {
@@ -482,12 +416,12 @@ export const Dialog = styled.div`
 
   width: 400px;
   height: 414px;
-  background-color: ${({theme}) => theme.color.white};
+  background-color: ${({ theme }) => theme.color.white};
   box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.75);
     
   h3 {
     font-size: 24px;
-    color: ${({theme}) => theme.color.darkText};
+    color: ${({ theme }) => theme.color.darkText};
     margin-bottom: 35px;
   }
   
@@ -518,11 +452,11 @@ export const Dialog = styled.div`
     }
 
     span.green {
-      color: ${({theme}) => theme.color.main};
+      color: ${({ theme }) => theme.color.main};
     }
 
     span.red {
-      color: ${({theme}) => theme.color.red};
+      color: ${({ theme }) => theme.color.red};
     }
   }
 
@@ -531,6 +465,6 @@ export const Dialog = styled.div`
     height: 38px;
     font-size: 20px;
     background-color: transparent;
-    border: solid 1px ${({theme}) => theme.color.darkText};
+    border: solid 1px ${({ theme }) => theme.color.darkText};
   }
 `
