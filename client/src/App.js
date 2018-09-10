@@ -7,9 +7,13 @@ import theme from './utils/theme'
 import formatNumber from './utils/format-number'
 import {
   Main,
+  Layout,
   Header,
+  Footer,
   Section,
   EthIcon,
+  Github,
+  Protofire,
   Button,
   WalletCdpsTable,
   Modal,
@@ -18,7 +22,7 @@ import {
   NewAlertNumberInput,
   NewAlertEmailInput,
   Percent
-} from './components/Styled'
+} from './components'
 
 class App extends Component {
   constructor (props) {
@@ -237,7 +241,7 @@ class App extends Component {
 
     return (
       <ThemeProvider theme={theme}>
-        <React.Fragment>
+        <Layout>
           <Header className={step > 2 ? 'black-bg' : ''}>
             <h3>CDP Alert</h3>
           </Header>
@@ -399,7 +403,15 @@ class App extends Component {
               </React.Fragment>
             )}
           </Main>
-        </React.Fragment>
+
+          {step > 2 && (
+            <Footer>
+              <p>
+                Open Source <Github/>. Made with <span>❤</span> by <Protofire/>
+              </p>
+            </Footer>
+          )}
+        </Layout>
       </ThemeProvider>
     )
   }
