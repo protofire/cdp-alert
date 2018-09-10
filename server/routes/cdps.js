@@ -1,9 +1,9 @@
-require('dotenv').config()
 const Router = require('koa-router')
 const Joi = require('joi')
 const validate = require('koa-joi-validate')
 const Maker = require('@makerdao/dai')
-const { Cdp } = require('./models')
+
+const { Cdp } = require('../models')
 
 const router = new Router()
 
@@ -16,8 +16,8 @@ const getCdpsValidator = validate({
 router.get('/:address', getCdpsValidator, async (ctx, next) => {
   try {
     const ownerAddress = ctx.params.address.toLowerCase()
-
     const cdpsIds = await Cdp.find({ ownerAddress }, 'cdpId')
+
     if (!cdpsIds) {
       ctx.throw(404, 'No CDPs found')
     }
