@@ -1,4 +1,5 @@
 const Maker = require('@makerdao/dai')
+
 const maker = Maker.create(process.env.NETWORK, {
   privateKey: `0x${process.env.PRIVATE_KEY}`,
   log: false
@@ -10,10 +11,11 @@ async function getCDP (id) {
   await auth
   try {
     const cdpApi = await maker.getCdp(Number(id))
-    return {
-      id,
-      collateralizationRatio: Number(await cdpApi.getCollateralizationRatio())
-    }
+    const collateralizationRatio = Number(
+      await cdpApi.getCollateralizationRatio()
+    )
+
+    return { id, collateralizationRatio }
   } catch (e) {
     console.error(e)
     return null

@@ -5,7 +5,7 @@ const Maker = require('@makerdao/dai')
 
 const { Cdp } = require('../models')
 
-const router = new Router()
+const cdpRouter = new Router()
 
 const getCdpsValidator = validate({
   params: {
@@ -13,7 +13,7 @@ const getCdpsValidator = validate({
   }
 })
 
-router.get('/:address', getCdpsValidator, async (ctx, next) => {
+cdpRouter.get('/:address', getCdpsValidator, async (ctx, next) => {
   try {
     const ownerAddress = ctx.params.address.toLowerCase()
     const cdpsIds = await Cdp.find({ ownerAddress }, 'cdpId')
@@ -91,4 +91,4 @@ router.get('/:address', getCdpsValidator, async (ctx, next) => {
   }
 })
 
-module.exports = router
+module.exports = cdpRouter

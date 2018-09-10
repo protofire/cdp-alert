@@ -17,8 +17,10 @@ async function disableOldAlerts (days = 60) {
       disabled: true
     }
   )
+
   if (oldAlerts.nModified) {
     console.log('Disabled', oldAlerts.nModified, 'old alerts')
   }
+
   return oldAlerts
 }
