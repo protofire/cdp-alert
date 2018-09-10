@@ -41,7 +41,7 @@ class App extends Component {
       failedToGetCdps: false,
       creationSuccess: null,
       showNotice: false,
-
+      showInsuranceModal: false,
       demoAccount: '0x0000000000000000000000000000000000000000',
       metamaskAccount: null,
       startMonitoringDisabled: false
