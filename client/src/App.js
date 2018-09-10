@@ -41,13 +41,14 @@ class App extends Component {
       failedToGetCdps: false,
       creationSuccess: null,
       showNotice: false,
+
       demoAccount: '0x0000000000000000000000000000000000000000',
       metamaskAccount: null,
       startMonitoringDisabled: false
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     clearInterval(this.updateEthPriceInterval)
   }
 
@@ -56,7 +57,7 @@ class App extends Component {
     if (web3Check.res === Web3States.OK
       && [1, 42].includes(web3Check.networkId)
       && web3Check.account) {
-      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan', { log: false})
+      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan', { log: false })
       await this.setState({
         web3: web3Check.web3,
         metamaskAccount: web3Check.account,
@@ -95,15 +96,27 @@ class App extends Component {
     return newState
   })
 
-  updateEthPrice = async () => {
-    const ethPrice = this.state.selectedWallet === 'metamask'
-      ?  (await (await this.maker.service('price')).getEthPrice()).toNumber()
-      :  (await (await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/')).json())[0].price_usd
+  openInsuranceModal = () => {
+    if (window.ga) {
+      window.ga('send', 'event', 'open-insurance-modal')
+    }
 
-    this.setState({ethPrice})
+    this.setState({ showInsuranceModal: true })
   }
 
-  handleChangeInput = name => event => this.setState({[name]: event.target.value})
+  closeInsuranceModal = () => {
+    this.setState({ showInsuranceModal: false })
+  }
+
+  updateEthPrice = async () => {
+    const ethPrice = this.state.selectedWallet === 'metamask'
+      ? (await (await this.maker.service('price')).getEthPrice()).toNumber()
+      : (await (await fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/')).json())[0].price_usd
+
+    this.setState({ ethPrice })
+  }
+
+  handleChangeInput = name => event => this.setState({ [name]: event.target.value })
 
   handleSubmit = event => {
     event.preventDefault()
@@ -112,7 +125,7 @@ class App extends Component {
   }
 
   createAlert = async () => {
-    const {email, minRatio, maxRatio, selectedWallet, demoAccount, metamaskAccount, walletCdps} = this.state
+    const { email, minRatio, maxRatio, selectedWallet, demoAccount, metamaskAccount, walletCdps } = this.state
 
     let res
     try {
@@ -123,7 +136,7 @@ class App extends Component {
         },
         body: JSON.stringify({
           'email': email,
-          'cdps': walletCdps.map(({cdpId}) => String(cdpId)),
+          'cdps': walletCdps.map(({ cdpId }) => String(cdpId)),
           'address': selectedWallet === 'demo' ? demoAccount : metamaskAccount,
           'min': minRatio,
           'max': maxRatio
@@ -151,11 +164,11 @@ class App extends Component {
         await this.initMetamask()
       }
     }
-    this.setState({step})
+    this.setState({ step })
   }
 
   goWithSelectedWallet = selectedWallet => {
-    this.setState({selectedWallet})
+    this.setState({ selectedWallet })
 
     switch (selectedWallet) {
       case 'ledger':
@@ -179,7 +192,7 @@ class App extends Component {
             const walletCdps = cdps
               .filter(cdp => cdp.collateralizationRatio > 0)
               .sort((a, b) => a.cdpId - b.cdpId)
-            this.setState({walletCdps, loading: false})
+            this.setState({ walletCdps, loading: false })
           })
     }
 
@@ -207,20 +220,20 @@ class App extends Component {
       default:
       case 'demo':
         return [
-          {cdpId: 3024, borrowedDai: 7536.470, lockedEth: 48.953, liquidationPrice: 226.189, collateralizationRatio: 1.87},
-          {cdpId: 3025, borrowedDai: 51000, lockedEth: 390.000, liquidationPrice: 390.000, collateralizationRatio: 2.20},
-          {cdpId: 3042, borrowedDai: 30000, lockedEth: 195.012, liquidationPrice: 226.019, collateralizationRatio: 1.87},
-          {cdpId: 3051, borrowedDai: 11000, lockedEth: 107.057, liquidationPrice: 150.960, collateralizationRatio: 2.80},
-          {cdpId: 3058, borrowedDai: 80, lockedEth: 0.489, liquidationPrice: 240.019, collateralizationRatio: 1.76},
-          {cdpId: 3074, borrowedDai: 95, lockedEth: 0.734, liquidationPrice: 189.999, collateralizationRatio: 2.23},
-          {cdpId: 3081, borrowedDai: 10, lockedEth: 0.214, liquidationPrice: 68.598, collateralizationRatio: 6.16},
-          {cdpId: 3083, borrowedDai: 1210, lockedEth: 10, liquidationPrice: 177.775, collateralizationRatio: 2.38}
+          { cdpId: 3024, borrowedDai: 7536.470, lockedEth: 48.953, liquidationPrice: 226.189, collateralizationRatio: 1.87 },
+          { cdpId: 3025, borrowedDai: 51000, lockedEth: 390.000, liquidationPrice: 390.000, collateralizationRatio: 2.20 },
+          { cdpId: 3042, borrowedDai: 30000, lockedEth: 195.012, liquidationPrice: 226.019, collateralizationRatio: 1.87 },
+          { cdpId: 3051, borrowedDai: 11000, lockedEth: 107.057, liquidationPrice: 150.960, collateralizationRatio: 2.80 },
+          { cdpId: 3058, borrowedDai: 80, lockedEth: 0.489, liquidationPrice: 240.019, collateralizationRatio: 1.76 },
+          { cdpId: 3074, borrowedDai: 95, lockedEth: 0.734, liquidationPrice: 189.999, collateralizationRatio: 2.23 },
+          { cdpId: 3081, borrowedDai: 10, lockedEth: 0.214, liquidationPrice: 68.598, collateralizationRatio: 6.16 },
+          { cdpId: 3083, borrowedDai: 1210, lockedEth: 10, liquidationPrice: 177.775, collateralizationRatio: 2.38 }
         ]
     }
   }
 
   render () {
-    const {LS} = this
+    const { LS } = this
     const {
       step,
       email,
@@ -230,6 +243,7 @@ class App extends Component {
       selectedWallet,
       ethPrice,
       showNotice,
+      showInsuranceModal,
       loading,
       working,
       failedToGetCdps,
@@ -253,7 +267,8 @@ class App extends Component {
                 <hr/>
                 <p>Don’t get under or over collateralized</p>
                 <button disabled={startMonitoringDisabled}
-                        onClick={() => this.changeStep(2)}>Start Monitoring</button>
+                        onClick={() => this.changeStep(2)}>Start Monitoring
+                </button>
               </Section>
             )}
             {step === 2 && (
@@ -369,6 +384,10 @@ class App extends Component {
                       <Button>Get alerts</Button>
                     </div>
                   </NewAlertForm>
+
+                  <Button className="insurance" onClick={() => this.openInsuranceModal()}>
+                    Get Collateral Protection Insurance
+                  </Button>
                 </Section>
 
                 {showNotice && (
@@ -397,6 +416,24 @@ class App extends Component {
                           Please try again.</p>)}
                       {working && <img src="/images/working.svg" alt="Creating alarm"/>}
                       {!working && <button onClick={() => this.toggleNotice()}>Close</button>}
+                    </Dialog>
+                  </Modal>
+                )}
+
+                {showInsuranceModal && (
+                  <Modal>
+                    <Dialog>
+                      <h3>Collateral protection insurance</h3>
+                      <hr/>
+                      <hr/>
+                      <p>
+                        Get the CDP collateral automatically increased when
+                        it gets close to the liquidation eligibility ratio
+                      </p>
+                      <p className="footer">
+                        COMING SOON
+                      </p>
+                      <button onClick={() => this.closeInsuranceModal()}>Close</button>
                     </Dialog>
                   </Modal>
                 )}
