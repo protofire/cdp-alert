@@ -97,9 +97,13 @@ class App extends Component {
   })
 
   openInsuranceModal = () => {
-    if (window.ga) {
-      window.ga('send', 'event', 'insurance-modal', 'open')
+    if ('ga' in window) {
+      const tracker = window.ga.getAll()[0];
+      if (tracker){
+        tracker.send('event', 'insurance-modal', 'open');
+      }
     }
+
 
     this.setState({ showInsuranceModal: true })
   }
