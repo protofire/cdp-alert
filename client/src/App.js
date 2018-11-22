@@ -57,7 +57,7 @@ class App extends Component {
     if (web3Check.res === Web3States.OK
       && [1, 42].includes(web3Check.networkId)
       && web3Check.account) {
-      this.maker = Maker.create(web3Check.networkId === 1 ? 'mainnet' : 'kovan', { log: false })
+      this.maker = Maker.create('browser')
       await this.setState({
         web3: web3Check.web3,
         metamaskAccount: web3Check.account,
