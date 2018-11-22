@@ -45,7 +45,6 @@ export const web3Checker = async function() {
     }
     // Legacy dapp browsers...
     else if (window.web3) {
-        window.web3 = new Web3(window.web3.currentProvider);
         return await returnWeb3();
     }
     // Non-dapp browsers...
