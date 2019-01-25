@@ -71,8 +71,9 @@ export const Main = styled.main`
   justify-content: center;
   align-items: center;
 
-  background: url('/images/background.png');
+  background: url('/images/background.jpg');
   background-size: cover;
+  background-color: #45433c;
 
   width: 100%;
   height: 100%;
